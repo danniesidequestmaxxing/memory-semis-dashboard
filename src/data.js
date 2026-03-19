@@ -212,10 +212,40 @@ export const TIER_COLORS = {
 };
 
 export const VALUATION_GAPS = [
-  {a:"BESI",aPE:54,b:"ASMPT",bPE:16,note:"Only true peers in hybrid/TC bonding. Both supply SK Hynix, Samsung, TSMC."},
-  {a:"FormFactor",aPE:26,b:"Micronics JP",bPE:18,note:"#1 and #2 probe card makers. Both serve memory. FORM = US premium, MJC = Japan discount."},
-  {a:"Advantest",aPE:35,b:"ISC / LEENO",bPE:14,note:"ATE vs sockets. Different products, same end-market. Consumables = recurring."},
-  {a:"WFE OEMs",aPE:32,b:"Subsystems",bPE:22,note:"Subsystems go inside WFE tools. Same cycle but 10x valuation gap (P/S 7-12x vs 1-5x)."},
-  {a:"LITE",aPE:35,b:"AAOI",bPE:null,note:"Both make AI transceivers/lasers. LITE = incumbent monopoly. AAOI = challenger at 1/6th the market cap."},
-  {a:"AXTI",aPE:null,b:"SOI",bPE:22,note:"Both supply critical substrates. AXTI = InP duopolist at $200M MC. SOI = SiPh monopolist at $6B."},
+  {
+    a:"BESI",aPE:54,b:"ASMPT",bPE:16,
+    title:"Hybrid bonding equipment duopoly",
+    summary:"BESI and ASMPT are the only two companies globally that manufacture thermocompression and hybrid bonding equipment for advanced memory packaging. Both supply the same customers (SK Hynix, Samsung, TSMC) with functionally comparable tools, yet BESI trades at 54x forward earnings while ASMPT trades at just 16x.",
+    thesis:"The gap exists because BESI is listed in Amsterdam and benefits from a Western premium, while ASMPT trades on the Hong Kong exchange where sentiment has been weaker. ASMPT also has a legacy SMT business that depresses its blended multiple. As HBM4E adoption drives hybrid bonding demand, ASMPT's bonding division could re-rate significantly, making it the clearest asymmetric setup in the entire packaging supply chain.",
+  },
+  {
+    a:"FormFactor",aPE:26,b:"Micronics JP",bPE:18,
+    title:"Probe card makers serving the same memory fabs",
+    summary:"FormFactor and Micronics Japan are the #1 and #2 global probe card manufacturers respectively. Both companies make MEMS-based probe cards used for wafer-level testing of memory chips, and both are direct beneficiaries of the HBM testing complexity increase.",
+    thesis:"FormFactor trades at a US-listed premium of 26x after a 320% run-up, while Micronics Japan trades at 18x on the Tokyo Stock Exchange. The products are functionally similar and serve the same end-markets, but Micronics benefits from a Japan discount and lower analyst coverage. For investors looking for HBM test exposure at a more reasonable entry point, Micronics offers comparable upside with a lower starting valuation.",
+  },
+  {
+    a:"Advantest",aPE:35,b:"ISC / LEENO",bPE:14,
+    title:"ATE platforms vs consumable test sockets",
+    summary:"Advantest makes the automated test equipment (ATE) platforms that test every HBM chip, while ISC and LEENO make the consumable test sockets and pins that physically contact the chip during testing. These sockets wear out and must be replaced regularly, creating a recurring revenue stream.",
+    thesis:"Advantest trades at 35x as the dominant ATE platform with 60-70% market share, while ISC and LEENO trade at 14-15x despite having higher-margin, recurring consumable revenue. The market prices the ATE platform provider at a premium, but the consumable suppliers arguably have a more defensible business model since their products are replaced every few thousand test cycles. Both sets of companies benefit from the same HBM testing ramp, but the consumable names offer a cheaper entry point into the same theme.",
+  },
+  {
+    a:"WFE OEMs",aPE:32,b:"Subsystems",bPE:22,
+    title:"Equipment makers vs the components inside them",
+    summary:"WFE OEMs like Applied Materials, Lam Research, and ASML build the tools that manufacture chips. Subsystem companies like MKS Instruments, Ichor Holdings, and Ultra Clean build the gas delivery, vacuum, and power components that go inside those very same tools. Both groups are exposed to the same semiconductor capital expenditure cycle.",
+    thesis:"WFE OEMs trade at a median of 32x forward P/E and 7-12x price-to-sales, while subsystem suppliers trade at a median of 22x P/E and just 1-5x price-to-sales. This 10x gap in revenue multiples is difficult to justify when subsystem content per tool is increasing and the same end-market demand drives both groups. Names like Ferrotec at 12x, Ultra Clean at 20x (1.1x P/S), and Ichor at 22x (1.2x P/S) represent the cheapest valuations in the entire semiconductor ecosystem relative to their growth exposure.",
+  },
+  {
+    a:"LITE",aPE:35,b:"AAOI",bPE:null,
+    title:"Incumbent laser monopoly vs emerging challenger",
+    summary:"Lumentum is the dominant supplier of EML lasers for AI optical networking, holding over 40% market share and serving as a critical component in Google's optical circuit switching architecture. Applied Optoelectronics (AAOI) is a smaller domestic competitor ramping 400G/800G transceivers with a made-in-America laser fabrication capability.",
+    thesis:"Lumentum has run 316% but its core thesis suggests significantly more upside as 1.6T transceiver demand accelerates and laser supply remains constrained through 2028. AAOI trades at roughly one-sixth of Lumentum's market cap despite executing a 10x revenue ramp and attracting hyperscaler interest as a second-source supplier. AAOI carries higher execution risk but offers a leveraged bet on the same optical networking buildout at a fraction of the valuation.",
+  },
+  {
+    a:"AXTI",aPE:null,b:"SOI",bPE:22,
+    title:"Two monopolistic substrate suppliers at vastly different valuations",
+    summary:"AXT holds 30-35% of the global InP substrate market (the base material for every laser in every AI transceiver), while Soitec holds a monopoly on SOI wafers used in silicon photonics chips. Both companies supply irreplaceable materials at the very bottom of the AI photonic supply chain.",
+    thesis:"AXT trades at approximately $200M market cap despite controlling a critical chokepoint in InP substrate supply, a market where qualification cycles run 12-18 months and new capacity takes 2-3 years to build. Soitec trades at $6B with a justified monopoly premium on SOI wafers. The 30x gap in market cap between these two strategically similar businesses suggests that AXT is either dramatically undervalued relative to its supply chain importance, or that the market is not yet pricing in the photonic buildout thesis for InP substrates.",
+  },
 ];

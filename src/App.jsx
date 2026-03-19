@@ -209,15 +209,23 @@ function MedianBars({tiers}) {
 
 function Gaps() {
   return <div className="chart-wrap">
-    <div className="chart-title">Widest valuation gaps — same exposure, different multiples</div>
-    <div style={{display:'flex',flexDirection:'column',gap:6}}>
-      {VALUATION_GAPS.map((g,i)=><div key={i} className="gap-row">
-        <div style={{display:'flex',alignItems:'center',gap:4,flex:'1 1 0'}}>
-          <span className="mono" style={{fontSize:12,fontWeight:700,color:'var(--red)'}}>{g.a} {g.aPE}x</span>
-          <span className="gap-vs">vs</span>
-          <span className="mono" style={{fontSize:12,fontWeight:700,color:'var(--green)'}}>{g.b} {g.bPE}x</span>
+    <div className="chart-title">Widest valuation gaps in the AI supply chain</div>
+    <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.6}}>
+      These pairs of companies share similar end-market exposure but trade at dramatically different valuations.
+      Understanding why each gap exists, and whether it is justified, is central to identifying mispriced opportunities across the semiconductor supply chain.
+    </p>
+    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+      {VALUATION_GAPS.map((g,i)=><div key={i} className="gap-card">
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+          <span className="mono" style={{fontSize:13,fontWeight:700,color:'var(--red)'}}>{g.a} {g.aPE?g.aPE+'x':'N/M'}</span>
+          <span style={{fontSize:10,color:'var(--t5)'}}>vs</span>
+          <span className="mono" style={{fontSize:13,fontWeight:700,color:'var(--green)'}}>{g.b} {g.bPE?g.bPE+'x':'N/M'}</span>
+          <span style={{fontSize:11,color:'var(--t2)',fontWeight:600,marginLeft:8}}>{g.title}</span>
         </div>
-        <div style={{flex:'2 1 0',fontSize:10,color:'var(--t4)',lineHeight:1.4}}>{g.note}</div>
+        <div style={{fontSize:11,color:'var(--t2)',lineHeight:1.6,marginBottom:6}}>{g.summary}</div>
+        <div style={{fontSize:11,color:'var(--t3)',lineHeight:1.6,padding:'8px 10px',background:'var(--bg)',borderRadius:4}}>
+          <strong style={{color:'var(--t2)'}}>Investment case: </strong>{g.thesis}
+        </div>
       </div>)}
     </div>
   </div>
