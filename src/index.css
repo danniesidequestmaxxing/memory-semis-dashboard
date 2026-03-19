@@ -85,7 +85,7 @@ td:nth-child(2) { text-align: left; font-weight: 600; }
 }
 .flow-arrow { display: flex; flex-direction: column; align-items: center; padding: 4px 0; }
 .flow-arrow-line { width: 2px; height: 12px; background: var(--border); }
-.flow-arrow-label { font-size: 9px; color: var(--t4); text-align: center; padding: 2px 0; }
+.flow-arrow-label { font-size: 11px; color: var(--t2); text-align: center; padding: 5px 14px; font-weight: 600; background: #ffffff08; border-radius: 4px; border: 1px solid #ffffff10; }
 .flow-arrow-head { color: var(--t4); font-size: 8px; line-height: 1; }
 .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; margin-bottom: 14px; }
 .profile-card {
