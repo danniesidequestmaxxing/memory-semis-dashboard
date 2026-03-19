@@ -6,7 +6,7 @@
 
 export const TIERS = [
   {
-    id:"demand", label:"DEMAND — Capital deployers", width:30,
+    id:"demand", label:"DEMAND — Capital deployers", icon:"☁️",
     what:"Who's spending the money. $660-690B combined capex 2026. 90% of OpCF consumed. $400B+ debt issuance.",
     industry:"Winner-take-most. Infinite balance sheets. Supply-constrained not demand-constrained.",
     value:"Fully valued. Not the trade — they're the catalyst.",
@@ -24,7 +24,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"compute", label:"COMPUTE — GPUs & custom silicon", width:35,
+    id:"compute", label:"COMPUTE — GPUs & custom silicon", icon:"⚡",
     what:"AI accelerators. Blackwell Ultra = $4k HBM/chip. NVIDIA 80%+ training share. Custom ASICs growing.",
     industry:"Near-monopoly (NVDA). CUDA moat. Revenue = f(hyperscaler capex).",
     value:"Priced for perfection. NVDA sideways 6mo = consolidation setup. Citrini sees upside surprise.",
@@ -37,7 +37,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"foundry", label:"FOUNDRY — Where chips get made", width:42,
+    id:"foundry", label:"FOUNDRY — Where chips get made", icon:"🏭",
     what:"TSMC 70% leading-edge, $190-200B 3yr capex. CoWoS bottleneck. Intel 18A ramp. GFS/UMC = specialty value.",
     industry:"Natural monopoly (leading). Chinese flooding (trailing). Specialty nodes undervalued.",
     value:"TSMC fair at 22x. GFS 3.2x P/S (vs 13x peer avg). UMC 14x = cheapest foundry.",
@@ -51,7 +51,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"memory", label:"MEMORY — The bottleneck", width:50,
+    id:"memory", label:"MEMORY — The bottleneck", icon:"💾",
     what:"MU reported 3/18: rev tripled to $23.9B, guided Q3 $33.5B. DDR4 premium to DDR5. Panic buying. MLC NAND -41.7% YoY.",
     industry:"Oligopoly (Big 3 = 95%). AI demand structural. HBM constrained through 2027.",
     value:"SK Hynix 8x, MU ~7x post-ER = cheapest large-cap semis. Legacy (Nanya 18x, ESMT 15x) = cyclical asymmetry.",
@@ -66,7 +66,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"wfe", label:"WFE OEMs — Fab equipment makers", width:58,
+    id:"wfe", label:"WFE OEMs — Fab equipment makers", icon:"🔧",
     what:"Deposition, etch, lithography, inspection. ASML = EUV monopoly. 1,500+ steps at 3nm. Each node +30% fab cost.",
     industry:"Segmented oligopoly. Very high barriers. Upcycle is priced in at OEM level.",
     value:"Mostly fair (30-38x). ONTO 27x PEG 0.86 best value. Lam 25x decent. ASM 38x = premium for ALD shift.",
@@ -82,7 +82,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"packaging", label:"PACKAGING — Stacking & bonding", width:68,
+    id:"packaging", label:"PACKAGING — Stacking & bonding", icon:"📦",
     what:"CoWoS, hybrid bonding, TC bonding, OSAT. HBM4E hybrid bonding = key catalyst. BESI has takeover interest.",
     industry:"Duopoly in bonding equip (BESI + ASMPT). Fragmented OSAT. Hanmi at risk from tech shift.",
     value:"BIGGEST GAP: BESI 54x vs ASMPT 16x. ASMPT = clearest asymmetric setup in entire chain.",
@@ -97,7 +97,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"testing", label:"TESTING — Quality control & consumables", width:80,
+    id:"testing", label:"TESTING — Quality control & consumables", icon:"🔬",
     what:"ATE (Advantest 60-70%), probers, handlers, burn-in. Probe cards & sockets = high-margin recurring. HBM = most complex test.",
     industry:"Oligopoly (ATE). Niche leaders (consumables). Consumables wear out = recurring revenue.",
     value:"Wide spread. FORM 26x (run up +320%). MJC 18x, ISC 14x = cheaper with similar exposure.",
@@ -117,7 +117,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"subsystems", label:"SUBSYSTEMS — Picks & shovels²", width:95,
+    id:"subsystems", label:"SUBSYSTEMS — Picks & shovels²", icon:"⚙️",
     what:"Gas, vacuum, plasma, thermal, cleaning. Every WFE tool = hundreds of subcomponents. 1,500+ process steps. HBM +50% wafer starts = 100-200% more content.",
     industry:"Fragmented niche leaders. OEM in-housing overstated. P/S 1-5x vs WFE 7-12x.",
     value:"THE VALUE LAYER. Ferrotec 12x, UCTT 20x (1.1x P/S), Ichor 22x (1.2x P/S) = cheapest in entire ecosystem.",
@@ -137,7 +137,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"photonics", label:"PHOTONICS — Lasers, transceivers & CPO", width:72,
+    id:"photonics", label:"PHOTONICS — Lasers, transceivers & CPO", icon:"🔴",
     what:"EML/CW DFB lasers sold out to 2028. CPO rotation 2027-28. Transceivers = bottleneck as 1.6T ramps. Every AI rack needs 10-50x more optical bandwidth.",
     industry:"Oligopoly in lasers (LITE 40%+). Transceivers fragmenting. CPO emerging. InP laser qualification = 12-18mo barrier.",
     value:"LITE 316% run but 1000%+ thesis. AAOI 10x rev ramp. SIVE micro-cap CW DFB play. COHR full vertical.",
@@ -155,7 +155,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"materials", label:"MATERIALS — InP substrates & upstream", width:55,
+    id:"materials", label:"MATERIALS — InP substrates & upstream", icon:"💎",
     what:"InP duopoly (AXTI + Sumitomo = 65%+). SiPh substrates (Soitec monopoly). Qualification cycles 12-18mo. Physics limits on crystal growth.",
     industry:"Extreme concentration. Export control risk. Capacity additions take 2-3 years. Biggest fragility in entire AI chain.",
     value:"AXTI 30-35% InP share at ~$200M MC = massive asymmetry. SOI premium but monopoly. IQE high-risk pivot.",
@@ -169,7 +169,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"networking", label:"NETWORKING — Optical interconnects & connectors", width:65,
+    id:"networking", label:"NETWORKING — Optical interconnects & connectors", icon:"🌐",
     what:"800G→1.6T→3.2T transition. Every AI cluster = thousands of optical links. DCO modules, coherent DSPs, high-speed connectors.",
     industry:"Oligopoly in coherent (CIEN, NOK, CSCO). Connectors concentrated (APH, TEL). Modules fragmenting.",
     value:"CIEN 20x reasonable. APH premium justified (25x) — connector monopoly. TSEM = pure-play SiPh foundry.",
@@ -186,7 +186,7 @@ export const TIERS = [
     ]
   },
   {
-    id:"power", label:"POWER & THERMAL — Data center infrastructure", width:88,
+    id:"power", label:"POWER & THERMAL — Data center infrastructure", icon:"🔌",
     what:"Each AI rack = 50-120kW (vs 10kW traditional). Grid, cooling, power conversion all undersized. Hidden limiter on AI buildout.",
     industry:"Oligopoly in power semis (ON, IFNNY). Vertiv/Eaton dominate cooling/UPS. Data center power demand up 3-5x by 2028.",
     value:"VRT 35x for dominant position. MPWR premium (40x) for AI power module share. VICR niche but expensive.",

@@ -17,10 +17,11 @@ function PEBar({ value }) {
 function Tier({tier,isOpen,toggle}) {
   const peColor = v => v<=18?'var(--green)':v<=30?'var(--gray)':'var(--red)'
   const fcfColor = v => v>=10?'var(--green)':v>=0?'var(--gray)':'var(--red)'
-  return <div style={{width:isOpen?'100%':`${tier.width}%`,minWidth:300,transition:'width 0.3s'}}>
+  return <div style={{width:'100%',transition:'width 0.3s'}}>
     <div className={`tier-bar ${isOpen?'open':''}`} onClick={toggle}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,flexWrap:'wrap'}}>
-        <div style={{flex:'1 1 200px',minWidth:0}}>
+        <div style={{flex:'1 1 200px',minWidth:0,display:'flex',alignItems:'center',gap:8}}>
+          <span style={{fontSize:16,lineHeight:1,flexShrink:0}}>{tier.icon}</span>
           <div className="mono" style={{fontSize:12,fontWeight:700,color:'var(--t1)',letterSpacing:'0.01em'}}>{tier.label}</div>
           {!isOpen && <div style={{fontSize:10,color:'var(--t4)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
             {tier.cos.map(c=>c.t).filter(t=>t!=='—').join(' · ')}
