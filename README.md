@@ -1,32 +1,57 @@
-# Memory Semiconductor Supply Chain — Valuation Pyramid
+# AI Memory Supply Chain — Valuation Pyramid
 
-Interactive dashboard mapping the AI memory supercycle from $600B+ hyperscaler capex to micro-cap subsystem vendors. 65+ companies across 8 supply chain tiers.
+Interactive dashboard mapping the AI semiconductor supply chain from hyperscaler capex to upstream materials chokepoints. 150+ companies across 12 supply chain tiers, with live Yahoo Finance data refreshed daily.
 
-Based on Citrini Research's "Muscle Memory" semis memo (Jan 2026).
+## Live Dashboard
+
+Deployed on Vercel with automatic daily data refresh at 10:35 AM ET on weekdays.
 
 ## Features
 
-- **Pyramid view** — expandable tiers showing industry structure, moat quality, median valuations, and full company tables
-- **PE vs Beta scatter** — risk-adjusted valuation bubble chart (size = market cap)  
-- **FCF yield ranking** — who's generating cash relative to valuation
-- **Revenue growth chart** — forward growth estimates sorted by acceleration
-- **Valuation gaps** — side-by-side comparisons of mispriced peers (BESI 54x vs ASMPT 16x)
+### Valuation Views
+- **Pyramid** — Expandable tiers showing industry structure, moat quality, median valuations, company profiles, and full metrics tables
+- **Supply Chain Flow** — Upstream to downstream diagram with EBITDA margin vs P/E hypothesis test and actionable investment interpretation by tier
+- **PE vs Beta** — Risk-adjusted valuation bubble chart (x = beta, y = forward P/E, bubble size = market cap) with interpretation guide
+- **FCF Yield** — Top 25 companies ranked by free cash flow yield
+- **Revenue Growth** — Top 30 companies by estimated forward revenue growth
+- **Valuation Gaps** — Side-by-side analysis of mispriced peer pairs across the supply chain
+
+### Alpha Tools (Relative Value Tab)
+- **Supply Chain Valuation Ratios** — Compares median P/E across upstream, midstream, downstream, and demand tiers to identify when an entire supply chain layer is trading cheap relative to its customers
+- **Supplier vs Customer Pairs** — 28 explicit supplier-to-customer relationships (e.g. TSMC to NVIDIA, SK Hynix to Google) with P/E ratio comparisons sorted by dislocation
+- **Asymmetry Score** — Composite ranking of every public company using (RevGr / PE) x (EBITDA Margin / 20) x Size Factor, where smaller companies receive a higher multiplier to surface overlooked names with the best risk/reward
+- **Supply Chain Lag Detector** — Compares 50-day momentum between each supplier-customer pair to flag when downstream names have rallied but upstream suppliers have not yet followed
+
+## Supply Chain Tiers (12)
+
+| Stream | Tier | Examples |
+|--------|------|----------|
+| Upstream | Materials | AXT, IQE, Soitec, Corning, Sumitomo |
+| Upstream | Subsystems | MKS, Entegris, VAT Group, Ferrotec |
+| Midstream | WFE OEMs | ASML, Applied Materials, Lam Research, KLA |
+| Midstream | Foundry | TSMC, Samsung, Intel, GlobalFoundries |
+| Midstream | Packaging | BESI, ASMPT, Amkor, Powertech |
+| Midstream | Testing | Advantest, Teradyne, FormFactor |
+| Midstream | Photonics | Lumentum, Coherent, MACOM, Fabrinet |
+| Downstream | Compute | NVIDIA, Broadcom, AMD, Marvell |
+| Downstream | Memory | SK Hynix, Micron, Nanya, Winbond |
+| Downstream | Networking | Ciena, Amphenol, Cisco, Tower Semi |
+| Downstream | Power and Thermal | Vertiv, Monolithic Power, Eaton, ON Semi |
+| End Demand | Hyperscalers | Amazon, Google, Meta, Microsoft, Oracle |
 
 ## Data Sources
 
-- US prices: Yahoo Finance (3/18/2026 close)
-- KRX: Investing.com (3/19/2026)
-- Forward PE: StockAnalysis, GuruFocus, Morningstar
-- MU updated for post-earnings (reported 3/18: rev $23.9B, guided Q3 $33.5B)
-- TWSE/TSE/HKEX/SWX: Estimated from recent data
-
-**For live data integration**, connect: S&P Capital IQ API, Bloomberg DAPI, or Financial Modeling Prep ($15/mo).
+- **Live data**: Prices, forward P/E, EV/EBITDA, beta, FCF yield, EBITDA margins, and 50-day/200-day momentum from Yahoo Finance via yahoo-finance2
+- **Coverage**: Approximately 75 tickers across US (NYSE/NASDAQ), Korea (KRX), Taiwan (TWSE), Japan (TSE), Europe (AMS/SWX/EPA/LSE), and Hong Kong (HKEX)
+- **Refresh**: Vercel cron job runs weekdays at 10:35 AM ET, cached at the edge for 24 hours
+- **Fallback**: Static data from March 2026 used when API is unavailable
 
 ## Stack
 
 - React 18 + Vite
 - Chart.js 4 (via react-chartjs-2)
-- Deployed on Vercel
+- yahoo-finance2 for market data
+- Vercel (serverless API + edge caching + cron)
 
 ## Local Development
 
@@ -35,13 +60,18 @@ npm install
 npm run dev
 ```
 
-## Deploy
+The API endpoint at /api/market-data fetches live data from Yahoo Finance. In local development, the dashboard falls back to static data unless you run the API separately.
 
-```bash
-# Via Vercel CLI
-npx vercel --prod
+## Project Structure
 
-# Or connect GitHub repo to Vercel dashboard
+```
+src/
+  App.jsx        - Main component with all tabs and visualizations
+  data.js        - Static company data, tier definitions, supply chain pairs
+  index.css      - Dark theme styling
+api/
+  market-data.js - Vercel serverless function for Yahoo Finance data
+vercel.json      - Deployment config with cron schedule
 ```
 
 ## Disclaimer
