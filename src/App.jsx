@@ -358,7 +358,7 @@ function SupplyChainTab({tiers}) {
           <div style={{flex:0.6,display:'flex',gap:2,alignItems:'center'}}>
             {/* P/E bar */}
             <div style={{flex:1,height:12,background:'var(--bg)',borderRadius:3,overflow:'hidden'}}>
-              <div style={{width:`${((t.medPE||0)/maxPE)*100}%`,height:'100%',background:t.color,borderRadius:3,opacity:0.4}}/>
+              <div style={{width:`${((t.medPE||0)/maxPE)*100}%`,height:'100%',background:STREAM_COLORS[t.stream],borderRadius:3,opacity:0.3}}/>
             </div>
             <div className="mono" style={{fontSize:9,fontWeight:600,color:'var(--t2)',width:24,textAlign:'right'}}>{t.medPE}x</div>
           </div>
