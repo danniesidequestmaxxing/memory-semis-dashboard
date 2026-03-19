@@ -121,6 +121,7 @@ function BubbleChart() {
       Compute:{c:dn,d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'}]},
       Networking:{c:dn,d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'}]},
       Power:{c:dn,d:[{x:1.5,y:35,r:10,l:'Vertiv'},{x:1.4,y:42,r:9,l:'MPWR'},{x:1.0,y:30,r:13,l:'Eaton'},{x:1.6,y:18,r:8,l:'ON Semi'},{x:1.3,y:16,r:10,l:'Infineon'}]},
+      Demand:{c:dem,d:[{x:1.15,y:35,r:20,l:'Amazon'},{x:1.05,y:22,r:20,l:'Alphabet'},{x:1.25,y:24,r:18,l:'Meta'},{x:0.9,y:32,r:22,l:'Microsoft'},{x:1.1,y:28,r:10,l:'Oracle'}]},
     }
     chartRef.current = new Chart(ref.current,{
       type:'bubble',
@@ -136,7 +137,7 @@ function BubbleChart() {
     <div className="chart-title">Forward P/E vs beta — risk-adjusted valuation</div>
     <div style={{position:'relative',height:420}}><canvas ref={ref}/></div>
     <div className="legend">
-      {Object.entries({'Upstream (Materials, Subsystems)':'#4ade80','Midstream (WFE, Foundry, Packaging, Testing, Photonics)':'#60a5fa','Downstream (Memory, Compute, Networking, Power)':'#fbbf24'}).map(([n,c])=>
+      {Object.entries({'Upstream (Materials, Subsystems)':'#4ade80','Midstream (WFE, Foundry, Packaging, Testing, Photonics)':'#60a5fa','Downstream (Memory, Compute, Networking, Power)':'#fbbf24','End Demand (Hyperscalers, AI Labs)':'#fb923c'}).map(([n,c])=>
         <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
       )}
       <span style={{color:'var(--t4)',fontSize:10,marginLeft:8}}>Bubble size = market cap. Bottom-left = safest value.</span>
