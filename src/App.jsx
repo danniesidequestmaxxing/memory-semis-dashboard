@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Chart, registerables } from 'chart.js'
-import { TIERS, TIER_COLORS, VALUATION_GAPS } from './data.js'
+import { TIERS, TIER_COLORS, VALUATION_GAPS, SUPPLY_CHAIN_PAIRS } from './data.js'
 
 Chart.register(...registerables)
 
@@ -466,6 +466,178 @@ function SupplyChainTab({tiers}) {
   </>;
 }
 
+function RelativeValueTab({tiers}) {
+  // Build ticker → company+stream lookup
+  const coMap = {}
+  tiers.forEach(tier => {
+    tier.cos.forEach(co => {
+      if (co.t !== '—') coMap[co.t] = { ...co, stream: tier.stream, tierLabel: tier.label.split(' — ')[0] }
+    })
+  })
+
+  // Calculate stream median P/Es
+  const streamMedian = {}
+  for (const stream of ['upstream','midstream','downstream','demand']) {
+    const pes = tiers.filter(t=>t.stream===stream).flatMap(t=>t.cos.filter(c=>c.pe!=null).map(c=>c.pe))
+    pes.sort((a,b)=>a-b)
+    const m = Math.floor(pes.length/2)
+    streamMedian[stream] = pes.length ? (pes.length%2 ? pes[m] : Math.round((pes[m-1]+pes[m])/2)) : null
+  }
+
+  // Stream-level ratios
+  const streamRatios = [
+    {label:'Upstream / Downstream',num:'upstream',den:'downstream',desc:'Materials & subsystems vs memory, compute, networking, and power'},
+    {label:'Upstream / Demand',num:'upstream',den:'demand',desc:'Materials & subsystems vs hyperscalers and AI labs'},
+    {label:'Midstream / Downstream',num:'midstream',den:'downstream',desc:'Equipment, foundry, packaging, testing, and photonics vs finished products'},
+    {label:'Midstream / Demand',num:'midstream',den:'demand',desc:'Equipment and manufacturing vs hyperscalers and AI labs'},
+  ].map(r => ({...r, ratio: (streamMedian[r.num] && streamMedian[r.den]) ? streamMedian[r.num]/streamMedian[r.den] : null}))
+
+  // Company-level pairs
+  const pairs = SUPPLY_CHAIN_PAIRS.map(p => {
+    const sup = coMap[p.supplier]
+    const cust = coMap[p.customer]
+    if (!sup || !cust) return null
+    const ratio = (sup.pe != null && cust.pe != null && cust.pe > 0) ? sup.pe / cust.pe : null
+    return { ...p, sup, cust, ratio }
+  }).filter(Boolean)
+
+  // Sort: valid ratios first (ascending), then null ratios
+  const sorted = [...pairs].sort((a,b) => {
+    if (a.ratio == null && b.ratio == null) return 0
+    if (a.ratio == null) return 1
+    if (b.ratio == null) return -1
+    return a.ratio - b.ratio
+  })
+
+  const top5 = sorted.filter(p => p.ratio != null).slice(0, 5)
+
+  const ratioColor = r => r < 0.6 ? '#4ade80' : r < 0.8 ? '#86efac' : r < 1.0 ? 'var(--gray)' : r < 1.2 ? '#fca5a5' : '#ef4444'
+  const ratioLabel = r => r < 0.5 ? 'Deep value' : r < 0.7 ? 'Undervalued' : r < 0.9 ? 'Fair' : r < 1.1 ? 'Parity' : 'Expensive'
+
+  return <>
+    {/* Section 1: Stream-level ratios */}
+    <div className="chart-wrap">
+      <div className="chart-title">Supply chain valuation ratios</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+        These ratios compare the median forward P/E of upstream and midstream tiers against their downstream customers and end-demand hyperscalers.
+        A ratio below 1.0x means the supplier tier trades at a discount to its customer tier. Ratios below 0.7x suggest the market is systematically
+        underpricing the supplier relative to the demand it enables. This is where the asymmetry lives.
+      </p>
+      <div style={{display:'flex',flexDirection:'column',gap:10}}>
+        {streamRatios.map(r => {
+          const ratio = r.ratio
+          const maxBar = 1.5
+          return <div key={r.label}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
+              <div style={{width:180,fontSize:10,color:'var(--t3)',textAlign:'right',flexShrink:0}}>{r.label}</div>
+              <div style={{flex:1,height:18,background:'var(--bg)',borderRadius:4,overflow:'hidden',position:'relative'}}>
+                {/* Parity reference line at 1.0x */}
+                <div style={{position:'absolute',left:`${(1.0/maxBar)*100}%`,top:0,bottom:0,width:1,background:'rgba(255,255,255,0.2)',zIndex:2}}/>
+                {ratio != null && <div style={{width:`${Math.min(ratio/maxBar,1)*100}%`,height:'100%',background:ratioColor(ratio),borderRadius:4,opacity:0.6}}/>}
+              </div>
+              <div className="mono" style={{fontSize:13,fontWeight:700,color:ratio!=null?ratioColor(ratio):'var(--t4)',width:44,textAlign:'right'}}>
+                {ratio != null ? ratio.toFixed(2)+'x' : 'N/M'}
+              </div>
+            </div>
+            <div style={{fontSize:9,color:'var(--t4)',marginLeft:188}}>{r.desc}</div>
+          </div>
+        })}
+      </div>
+      <div style={{marginTop:10,fontSize:9,color:'var(--t4)'}}>
+        Dashed line at 1.0x = parity. Green = supplier cheap. Red = supplier expensive.
+      </div>
+    </div>
+
+    {/* Section 2: Company-level pairs */}
+    <div className="chart-wrap">
+      <div className="chart-title">Supplier vs customer valuation pairs</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+        Each row compares a specific supplier's forward P/E to its direct customer. Sorted by ratio ascending, so the most
+        dislocated pairs (where the supplier trades cheapest relative to its customer) appear at the top. These are the relationships
+        where the market has not yet priced in the supplier's importance to the customer's revenue.
+      </p>
+      <div style={{display:'flex',gap:4,padding:'6px 10px',marginBottom:4,fontSize:9,color:'var(--t4)'}}>
+        <div style={{width:140}}>SUPPLIER</div>
+        <div style={{width:50,textAlign:'right'}}>P/E</div>
+        <div style={{width:30,textAlign:'center'}}>→</div>
+        <div style={{width:140}}>CUSTOMER</div>
+        <div style={{width:50,textAlign:'right'}}>P/E</div>
+        <div style={{flex:1}}/>
+        <div style={{width:55,textAlign:'right'}}>RATIO</div>
+        <div style={{width:80,textAlign:'right'}}>SIGNAL</div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:3}}>
+        {sorted.map((p,i) => <div key={i} className="rv-pair-row">
+          <div style={{width:140,display:'flex',alignItems:'center',gap:4}}>
+            <span style={{width:6,height:6,borderRadius:3,background:STREAM_COLORS[p.sup.stream],flexShrink:0}}/>
+            <span className="mono" style={{fontSize:10,fontWeight:600,color:'var(--t1)'}}>{p.supplier}</span>
+            <span style={{fontSize:9,color:'var(--t3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.sup.n}</span>
+          </div>
+          <div className="mono" style={{width:50,fontSize:10,textAlign:'right',color:p.sup.pe!=null?'var(--t2)':'var(--t4)'}}>{p.sup.pe!=null?p.sup.pe+'x':'N/M'}</div>
+          <div style={{width:30,textAlign:'center',fontSize:10,color:'var(--t4)'}}>→</div>
+          <div style={{width:140,display:'flex',alignItems:'center',gap:4}}>
+            <span style={{width:6,height:6,borderRadius:3,background:STREAM_COLORS[p.cust.stream],flexShrink:0}}/>
+            <span className="mono" style={{fontSize:10,fontWeight:600,color:'var(--t1)'}}>{p.customer}</span>
+            <span style={{fontSize:9,color:'var(--t3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.cust.n}</span>
+          </div>
+          <div className="mono" style={{width:50,fontSize:10,textAlign:'right',color:p.cust.pe!=null?'var(--t2)':'var(--t4)'}}>{p.cust.pe!=null?p.cust.pe+'x':'N/M'}</div>
+          <div style={{flex:1,fontSize:9,color:'var(--t4)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',paddingLeft:8}}>{p.rel}</div>
+          <div className="mono" style={{width:55,fontSize:11,fontWeight:700,textAlign:'right',color:p.ratio!=null?ratioColor(p.ratio):'var(--t4)'}}>
+            {p.ratio != null ? p.ratio.toFixed(2)+'x' : 'N/M'}
+          </div>
+          <div style={{width:80,textAlign:'right'}}>
+            {p.ratio != null && <span style={{fontSize:9,fontWeight:600,padding:'1px 6px',borderRadius:3,background:ratioColor(p.ratio)+'20',color:ratioColor(p.ratio)}}>
+              {ratioLabel(p.ratio)}
+            </span>}
+          </div>
+        </div>)}
+      </div>
+      <div className="legend" style={{marginTop:10}}>
+        {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+          <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+        )}
+      </div>
+    </div>
+
+    {/* Section 3: Top dislocations interpretation */}
+    <div className="chart-wrap">
+      <div className="chart-title">Largest valuation dislocations in the supply chain</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+        These are the five pairs where a supplier trades at the steepest discount to its direct customer. A low ratio does not
+        automatically mean the supplier is a buy, but it flags a relationship where the market may be underpricing the supplier's
+        importance to the customer's earnings. The question to ask: can the customer generate its revenue without this supplier?
+      </p>
+      <div style={{display:'flex',flexDirection:'column',gap:10}}>
+        {top5.map((p,i) => <div key={i} style={{padding:'12px 16px',background:'rgba(74,222,128,0.05)',borderRadius:8,borderLeft:'3px solid #4ade80'}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+            <span className="mono" style={{fontSize:13,fontWeight:700,color:STREAM_COLORS[p.sup.stream]}}>{p.supplier}</span>
+            <span style={{fontSize:10,color:'var(--t4)'}}>at {p.sup.pe}x</span>
+            <span style={{fontSize:10,color:'var(--t5)'}}>→</span>
+            <span className="mono" style={{fontSize:13,fontWeight:700,color:STREAM_COLORS[p.cust.stream]}}>{p.customer}</span>
+            <span style={{fontSize:10,color:'var(--t4)'}}>at {p.cust.pe}x</span>
+            <span style={{flex:1}}/>
+            <span className="mono" style={{fontSize:14,fontWeight:700,color:'#4ade80'}}>{p.ratio.toFixed(2)}x</span>
+          </div>
+          <div style={{fontSize:11,color:'var(--t3)',lineHeight:1.6}}>
+            <strong style={{color:'var(--t2)'}}>{p.sup.n}</strong> trades at {Math.round(p.ratio*100)}% of <strong style={{color:'var(--t2)'}}>{p.cust.n}</strong>'s forward P/E.
+            {p.ratio < 0.5 ? ` This means the market values the supplier at less than half the multiple of its customer, despite ${p.sup.n} being a direct input to ${p.cust.n}'s ability to generate revenue. ` :
+             p.ratio < 0.7 ? ` The supplier trades at a significant discount to the company it enables, suggesting the market has not fully priced in the demand visibility flowing from ${p.cust.n}. ` :
+             ` The supplier trades at a moderate discount to its customer. `}
+            Relationship: {p.rel}. {p.sup.mc && `Supplier market cap: ${p.sup.mc}.`}
+          </div>
+        </div>)}
+      </div>
+
+      <div style={{marginTop:14,padding:'10px 14px',background:'#ffffff06',borderRadius:6,fontSize:10,color:'var(--t4)',lineHeight:1.6}}>
+        <strong style={{color:'var(--t3)'}}>How to use this:</strong> The lowest ratios flag where the market is pricing the supplier as if it has
+        limited leverage over its customer, even when the supplier occupies an irreplaceable position in the customer's BOM. When these ratios
+        compress (supplier re-rates toward customer), the supplier's stock outperforms. Watch for earnings catalysts at the customer level
+        that confirm demand visibility for the supplier.
+      </div>
+    </div>
+  </>
+}
+
 function DataStatus({isLive, updated}) {
   return <span style={{fontSize:9,padding:'2px 6px',borderRadius:4,marginLeft:8,
     background:isLive?'rgba(74,222,128,0.15)':'rgba(239,68,68,0.15)',
@@ -479,7 +651,7 @@ export default function App() {
   const [open,setOpen] = useState('demand')
   const [tiers,setTiers] = useState(TIERS)
   const [dataStatus,setDataStatus] = useState({isLive:false,updated:null})
-  const tabs = [['pyramid','Pyramid'],['chain','Supply Chain'],['scatter','PE vs Beta'],['fcf','FCF Yield'],['growth','Rev Growth'],['gaps','Valuation Gaps']]
+  const tabs = [['pyramid','Pyramid'],['chain','Supply Chain'],['scatter','PE vs Beta'],['fcf','FCF Yield'],['growth','Rev Growth'],['gaps','Valuation Gaps'],['relval','Relative Value']]
 
   useEffect(()=>{
     fetch('/api/market-data')
@@ -516,6 +688,7 @@ export default function App() {
     {tab==='fcf' && <FCFChart tiers={tiers}/>}
     {tab==='growth' && <GrowthChart tiers={tiers}/>}
     {tab==='gaps' && <Gaps/>}
+    {tab==='relval' && <RelativeValueTab tiers={tiers}/>}
     {tab==='chain' && <SupplyChainTab tiers={tiers}/>}
 
     <div className="method">
