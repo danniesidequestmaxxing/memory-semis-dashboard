@@ -136,11 +136,79 @@ export const TIERS = [
       {t:"PDFS",n:"PDF Solutions",px:"$38",pe:50,ev:40,mc:"$1.5B",v:"Yahoo est",beta:1.3,fcf:1.0,revGr:20,yf:"PDFS",desc:"Yield analytics software + test chips for process control.",products:"Exensio platform, CV test chips, DFI",clients:"TSMC, Samsung, Intel, GlobalFoundries"},
     ]
   },
+  {
+    id:"photonics", label:"PHOTONICS — Lasers, transceivers & CPO", width:72,
+    what:"EML/CW DFB lasers sold out to 2028. CPO rotation 2027-28. Transceivers = bottleneck as 1.6T ramps. Every AI rack needs 10-50x more optical bandwidth.",
+    industry:"Oligopoly in lasers (LITE 40%+). Transceivers fragmenting. CPO emerging. InP laser qualification = 12-18mo barrier.",
+    value:"LITE 316% run but 1000%+ thesis. AAOI 10x rev ramp. SIVE micro-cap CW DFB play. COHR full vertical.",
+    medPE:30, medEV:20, medFCF:8,
+    cos:[
+      {t:"LITE",n:"Lumentum",px:"$105",pe:35,ev:22,mc:"$7.2B",v:"Yahoo est",beta:1.5,fcf:3.0,revGr:25,yf:"LITE",desc:"Hidden monopoly in OCS lasers. #1 EML supplier. Google BOM critical.",products:"EML lasers, CW DFB, ROADMs, 3D sensing",clients:"Google, Meta, MSFT, Cisco, Apple"},
+      {t:"COHR",n:"Coherent",px:"$92",pe:28,ev:18,mc:"$14B",v:"Yahoo est",beta:1.6,fcf:2.5,revGr:20,yf:"COHR",desc:"Full vertical: InP substrates → lasers → transceivers. Finisar legacy.",products:"800G/1.6T transceivers, VCSEL, InP lasers, SiC substrates",clients:"Hyperscalers, telecom, industrial"},
+      {t:"AAOI",n:"Applied Optoelectronics",px:"$32",pe:null,ev:null,mc:"$1.2B",v:"Yahoo est",beta:2.2,fcf:-3,revGr:80,yf:"AAOI",desc:"Made-in-America lasers & transceivers. 10x rev ramp. Buyout target.",products:"EML lasers, 400G/800G transceivers",clients:"Hyperscalers, MSFT, Meta"},
+      {t:"SIVEF",n:"Sivers Semiconductors",px:"SEK 45",pe:null,ev:null,mc:"$0.3B",v:"OMX est",beta:2.0,fcf:-10,revGr:100,yf:"SIVE.ST",desc:"Upstream CW DFB lasers for CPO. Mini-LITE at $300M MC. Jabil 1.6T validated.",products:"CW DFB lasers, InP photonic ICs",clients:"POET, Ayar Labs, Jabil, hyperscalers"},
+      {t:"POET",n:"POET Technologies",px:"$4.50",pe:null,ev:null,mc:"$0.5B",v:"Yahoo est",beta:2.5,fcf:-15,revGr:null,yf:"POET",desc:"Optical interposer platform. Captive Marvell/Celestial relationship.",products:"Optical interposers, CPO engines",clients:"Marvell/Celestial, hyperscalers"},
+      {t:"MTSI",n:"MACOM Technology",px:"$125",pe:38,ev:28,mc:"$8.5B",v:"Yahoo est",beta:1.4,fcf:2.0,revGr:18,yf:"MTSI",desc:"Analog/mixed-signal + laser drivers for optical. EML multi-source.",products:"Laser drivers, TIAs, analog ICs, InP HBTs",clients:"Transceiver makers, telecom, defense"},
+      {t:"FN",n:"Fabrinet",px:"$250",pe:30,ev:22,mc:"$9B",v:"Yahoo est",beta:1.3,fcf:3.5,revGr:15,yf:"FN",desc:"Precision optical manufacturing. Makes transceivers for LITE, COHR.",products:"Optical assembly, transceiver packaging, precision OEM",clients:"Lumentum, Coherent, NVIDIA, hyperscalers"},
+      {t:"HIMX",n:"Himax Technologies",px:"$11",pe:18,ev:10,mc:"$2B",v:"Yahoo est",beta:1.4,fcf:4.0,revGr:12,yf:"HIMX",desc:"Micro-lens & fiber arrays for CPO. Display IC pivot to photonics.",products:"WLO micro-lens arrays, display drivers, LCOS",clients:"CPO integrators, AR/VR, auto"},
+      {t:"LWLG",n:"Lightwave Logic",px:"$5",pe:null,ev:null,mc:"$0.4B",v:"Yahoo est",beta:2.0,fcf:-20,revGr:null,yf:"LWLG",desc:"Speculative electro-optic polymer modulators. Pre-revenue R&D.",products:"Polymer modulators (R&D stage)",clients:"Pre-commercial"},
+    ]
+  },
+  {
+    id:"materials", label:"MATERIALS — InP substrates & upstream", width:55,
+    what:"InP duopoly (AXTI + Sumitomo = 65%+). SiPh substrates (Soitec monopoly). Qualification cycles 12-18mo. Physics limits on crystal growth.",
+    industry:"Extreme concentration. Export control risk. Capacity additions take 2-3 years. Biggest fragility in entire AI chain.",
+    value:"AXTI 30-35% InP share at ~$200M MC = massive asymmetry. SOI premium but monopoly. IQE high-risk pivot.",
+    medPE:25, medEV:14, medFCF:5,
+    cos:[
+      {t:"AXTI",n:"AXT Inc",px:"$6.50",pe:null,ev:8,mc:"$0.2B",v:"Yahoo est",beta:1.8,fcf:0,revGr:15,yf:"AXTI",desc:"InP substrate duopolist (30-35% share). Vital precursor tie-in. If AXTI goes down, photonic buildout goes down.",products:"InP, GaAs, Ge substrates, Vital precursor JV",clients:"Lumentum, Coherent, II-VI, laser fabs"},
+      {t:"IQE",n:"IQE plc",px:"£0.28",pe:null,ev:null,mc:"$0.2B",v:"LSE est",beta:2.0,fcf:-5,revGr:10,yf:"IQE.L",desc:"Western InP epitaxy. LITE supplier. High-risk restructuring pivot.",products:"InP epiwafers, GaAs epi, GaN epi",clients:"Lumentum, Broadcom, Skyworks"},
+      {t:"SOI",n:"Soitec",px:"€95",pe:22,ev:14,mc:"$6B",v:"EPA est",beta:1.3,fcf:3.0,revGr:12,yf:"SOI.PA",desc:"SiPh/SOI substrate monopoly. Every SiPh chip needs Soitec wafers.",products:"SOI wafers, FD-SOI, piezoelectric substrates",clients:"GlobalFoundries, TSMC, STMicro, Tower Semi"},
+      {t:"GLW",n:"Corning",px:"$45",pe:20,ev:12,mc:"$37B",v:"Yahoo est",beta:1.1,fcf:4.0,revGr:8,yf:"GLW",desc:"Optical fiber + specialty glass. AI data center fiber demand surging.",products:"Optical fiber, Gorilla Glass, ceramic substrates, GenAI glass",clients:"Hyperscalers, telecom, Apple, auto"},
+      {t:"SMTOY",n:"Sumitomo Electric",px:"¥2,400",pe:14,ev:8,mc:"$18B",v:"TSE est",beta:0.9,fcf:3.5,revGr:6,yf:"5802.T",desc:"InP co-duopolist (35%+ share). Also optical fiber & power cables.",products:"InP substrates, optical fiber, GaN, compound semi",clients:"Laser fabs, telecom, auto, infrastructure"},
+    ]
+  },
+  {
+    id:"networking", label:"NETWORKING — Optical interconnects & connectors", width:65,
+    what:"800G→1.6T→3.2T transition. Every AI cluster = thousands of optical links. DCO modules, coherent DSPs, high-speed connectors.",
+    industry:"Oligopoly in coherent (CIEN, NOK, CSCO). Connectors concentrated (APH, TEL). Modules fragmenting.",
+    value:"CIEN 20x reasonable. APH premium justified (25x) — connector monopoly. TSEM = pure-play SiPh foundry.",
+    medPE:22, medEV:14, medFCF:10,
+    cos:[
+      {t:"CIEN",n:"Ciena",px:"$72",pe:20,ev:12,mc:"$10B",v:"Yahoo est",beta:1.2,fcf:4.0,revGr:10,yf:"CIEN",desc:"Coherent optical networking leader. WaveLogic DSPs dominate DCI.",products:"WaveLogic 6, coherent transceivers, packet switches",clients:"Hyperscalers, AT&T, Verizon, enterprises"},
+      {t:"NOK",n:"Nokia",px:"€4.50",pe:15,ev:8,mc:"$25B",v:"HEL est",beta:0.9,fcf:5.0,revGr:5,yf:"NOK",desc:"Optical networking + 5G infrastructure. PSE-6s coherent DSP.",products:"Coherent DSPs, optical transport, 5G RAN",clients:"Telecom operators, hyperscalers"},
+      {t:"CSCO",n:"Cisco",px:"$58",pe:16,ev:12,mc:"$235B",v:"Yahoo est",beta:0.9,fcf:5.5,revGr:6,yf:"CSCO",desc:"Network switches + optics. Silicon One + Acacia coherent.",products:"Nexus switches, Silicon One, Acacia coherent, ThousandEyes",clients:"Enterprises, hyperscalers, telecom"},
+      {t:"APH",n:"Amphenol",px:"$75",pe:35,ev:28,mc:"$90B",v:"Yahoo est",beta:1.1,fcf:3.0,revGr:15,yf:"APH",desc:"High-speed connector monopoly. In every AI rack and GPU tray.",products:"High-speed connectors, fiber optic, power, sensors",clients:"NVIDIA, hyperscalers, auto, defense"},
+      {t:"TEL",n:"TE Connectivity",px:"$155",pe:22,ev:16,mc:"$50B",v:"Yahoo est",beta:1.0,fcf:4.0,revGr:8,yf:"TEL",desc:"Connectors & sensors for data centers, auto, industrial.",products:"Data center connectors, sensors, fiber optics, auto harnesses",clients:"Hyperscalers, auto OEMs, industrial"},
+      {t:"TSEM",n:"Tower Semiconductor",px:"$55",pe:18,ev:10,mc:"$6B",v:"Yahoo est",beta:1.2,fcf:3.0,revGr:12,yf:"TSEM",desc:"Pure-play SiPh foundry. 70%+ capacity booked. The TSMC of photonics.",products:"SiPh, RF-SOI, SiGe BiCMOS, power BCD",clients:"Broadcom, Marvell, photonics IC designers"},
+      {t:"VIAV",n:"VIAV Solutions",px:"$10",pe:null,ev:12,mc:"$2.2B",v:"Yahoo est",beta:1.3,fcf:2.0,revGr:5,yf:"VIAV",desc:"Optical test & measurement. Filters for WDM optical networking.",products:"Optical filters, test instruments, anti-counterfeiting",clients:"Telecom, hyperscalers, government"},
+      {t:"KEYS",n:"Keysight Technologies",px:"$170",pe:28,ev:20,mc:"$30B",v:"Yahoo est",beta:1.1,fcf:3.5,revGr:8,yf:"KEYS",desc:"Test & measurement for RF, photonics, high-speed digital.",products:"Oscilloscopes, network analyzers, photonics test, 5G test",clients:"Chip designers, telecom, defense, auto"},
+    ]
+  },
+  {
+    id:"power", label:"POWER & THERMAL — Data center infrastructure", width:88,
+    what:"Each AI rack = 50-120kW (vs 10kW traditional). Grid, cooling, power conversion all undersized. Hidden limiter on AI buildout.",
+    industry:"Oligopoly in power semis (ON, IFNNY). Vertiv/Eaton dominate cooling/UPS. Data center power demand up 3-5x by 2028.",
+    value:"VRT 35x for dominant position. MPWR premium (40x) for AI power module share. VICR niche but expensive.",
+    medPE:28, medEV:20, medFCF:12,
+    cos:[
+      {t:"VRT",n:"Vertiv",px:"$115",pe:35,ev:25,mc:"$43B",v:"Yahoo est",beta:1.5,fcf:2.5,revGr:15,yf:"VRT",desc:"#1 in data center cooling & power distribution. Liquid cooling leader.",products:"CDUs, CRAHs, UPS, PDUs, busways",clients:"Hyperscalers, colocation, enterprise DC"},
+      {t:"MPWR",n:"Monolithic Power",px:"$720",pe:42,ev:38,mc:"$34B",v:"Yahoo est",beta:1.4,fcf:2.0,revGr:20,yf:"MPWR",desc:"AI power modules. Winning GPU VRM sockets on NVIDIA boards.",products:"Power modules, PMICs, VRMs, DC-DC converters",clients:"NVIDIA, hyperscalers, auto, industrial"},
+      {t:"VICR",n:"Vicor",px:"$55",pe:null,ev:null,mc:"$2.5B",v:"Yahoo est",beta:1.6,fcf:0,revGr:25,yf:"VICR",desc:"48V power architecture for AI racks. FPA modules in GPU trays.",products:"48V FPA modules, BCMs, voltage regulators",clients:"NVIDIA, hyperscalers, defense"},
+      {t:"ETN",n:"Eaton",px:"$320",pe:30,ev:22,mc:"$128B",v:"Yahoo est",beta:1.0,fcf:3.0,revGr:10,yf:"ETN",desc:"Electrical infrastructure. UPS, switchgear, PDUs for data centers.",products:"UPS, switchgear, PDUs, transformers, circuit breakers",clients:"Hyperscalers, utilities, industrial"},
+      {t:"NVT",n:"nVent Electric",px:"$72",pe:25,ev:18,mc:"$12B",v:"Yahoo est",beta:1.2,fcf:3.5,revGr:12,yf:"NVT",desc:"Enclosures, cooling, and liquid thermal management for DC.",products:"Rack enclosures, liquid cooling, cable management",clients:"Data centers, industrial, infrastructure"},
+      {t:"MOD",n:"Modine Mfg",px:"$115",pe:22,ev:14,mc:"$6B",v:"Yahoo est",beta:1.5,fcf:3.0,revGr:18,yf:"MOD",desc:"Thermal management for data centers. Liquid cooling systems.",products:"CDUs, heat exchangers, precision cooling",clients:"Hyperscalers, colocation, auto"},
+      {t:"ON",n:"ON Semiconductor",px:"$55",pe:18,ev:12,mc:"$24B",v:"Yahoo est",beta:1.6,fcf:4.0,revGr:8,yf:"ON",desc:"Power semis + SiC for EV and data center. Fab-liter model.",products:"SiC MOSFETs, IGBTs, power ICs, image sensors",clients:"Auto OEMs, data centers, industrial"},
+      {t:"IFNNY",n:"Infineon",px:"€32",pe:16,ev:10,mc:"$42B",v:"XETRA est",beta:1.3,fcf:4.5,revGr:6,yf:"IFX.DE",desc:"Europe's #1 power semi. SiC + GaN for auto and DC power.",products:"SiC, GaN, IGBTs, MCUs, sensors",clients:"Auto OEMs, industrial, data centers"},
+      {t:"SBGSY",n:"Schneider Electric",px:"€255",pe:28,ev:18,mc:"$145B",v:"EPA est",beta:0.9,fcf:3.5,revGr:8,yf:"SU.PA",desc:"Electrical distribution + DC infrastructure. Galaxy UPS dominant.",products:"UPS, switchgear, BMS, EcoStruxure, cooling",clients:"Hyperscalers, enterprise, industrial, utilities"},
+    ]
+  },
 ];
 
 export const TIER_COLORS = {
   demand:'#fb923c', compute:'#fbbf24', foundry:'#c084fc', memory:'#4ade80',
-  wfe:'#5eead4', packaging:'#f472b6', testing:'#60a5fa', subsystems:'#a78bfa'
+  wfe:'#5eead4', packaging:'#f472b6', testing:'#60a5fa', subsystems:'#a78bfa',
+  photonics:'#f97316', materials:'#a3e635', networking:'#38bdf8', power:'#e879f9'
 };
 
 export const VALUATION_GAPS = [
@@ -148,4 +216,6 @@ export const VALUATION_GAPS = [
   {a:"FormFactor",aPE:26,b:"Micronics JP",bPE:18,note:"#1 and #2 probe card makers. Both serve memory. FORM = US premium, MJC = Japan discount."},
   {a:"Advantest",aPE:35,b:"ISC / LEENO",bPE:14,note:"ATE vs sockets. Different products, same end-market. Consumables = recurring."},
   {a:"WFE OEMs",aPE:32,b:"Subsystems",bPE:22,note:"Subsystems go inside WFE tools. Same cycle but 10x valuation gap (P/S 7-12x vs 1-5x)."},
+  {a:"LITE",aPE:35,b:"AAOI",bPE:null,note:"Both make AI transceivers/lasers. LITE = incumbent monopoly. AAOI = challenger at 1/6th the market cap."},
+  {a:"AXTI",aPE:null,b:"SOI",bPE:22,note:"Both supply critical substrates. AXTI = InP duopolist at $200M MC. SOI = SiPh monopolist at $6B."},
 ];

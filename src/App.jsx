@@ -113,12 +113,16 @@ function BubbleChart() {
       Packaging:{c:'#f472b6',d:[{x:1.6,y:54,r:8,l:'BESI'},{x:1.3,y:16,r:6,l:'ASMPT'},{x:1.5,y:26,r:9,l:'Amkor'},{x:1.2,y:14,r:7,l:'Powertech'}]},
       'WFE OEMs':{c:'#5eead4',d:[{x:1.2,y:32,r:14,l:'ASML'},{x:1.7,y:34,r:13,l:'AMAT'},{x:1.4,y:25,r:10,l:'Lam'},{x:1.3,y:35,r:12,l:'KLA'},{x:1.4,y:38,r:8,l:'ASM'},{x:1.5,y:27,r:7,l:'ONTO'}]},
       Compute:{c:'#fbbf24',d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'}]},
+      Photonics:{c:'#f97316',d:[{x:1.5,y:35,r:8,l:'Lumentum'},{x:1.6,y:28,r:10,l:'Coherent'},{x:1.4,y:38,r:8,l:'MACOM'},{x:1.3,y:30,r:8,l:'Fabrinet'},{x:1.4,y:18,r:5,l:'Himax'}]},
+      Materials:{c:'#a3e635',d:[{x:1.3,y:22,r:7,l:'Soitec'},{x:1.1,y:20,r:6,l:'Corning'},{x:0.9,y:14,r:6,l:'Sumitomo'}]},
+      Networking:{c:'#38bdf8',d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'}]},
+      Power:{c:'#e879f9',d:[{x:1.5,y:35,r:10,l:'Vertiv'},{x:1.4,y:42,r:9,l:'MPWR'},{x:1.0,y:30,r:13,l:'Eaton'},{x:1.6,y:18,r:8,l:'ON Semi'},{x:1.3,y:16,r:10,l:'Infineon'}]},
     }
     chartRef.current = new Chart(ref.current,{
       type:'bubble',
       data:{datasets:Object.entries(tiers).map(([n,{c,d}])=>({label:n,data:d,backgroundColor:c+'80',borderColor:c,borderWidth:0.5}))},
       options:{responsive:true,maintainAspectRatio:false,layout:{padding:20},
-        scales:{x:{title:{display:true,text:'Beta →',color:'#777',font:{size:11}},min:0.8,max:2.0,grid:{color:'#ffffff0a'},ticks:{color:'#777',stepSize:0.2}},
+        scales:{x:{title:{display:true,text:'Beta →',color:'#777',font:{size:11}},min:0.8,max:2.2,grid:{color:'#ffffff0a'},ticks:{color:'#777',stepSize:0.2}},
                 y:{title:{display:true,text:'Forward P/E →',color:'#777',font:{size:11}},min:0,max:60,grid:{color:'#ffffff0a'},ticks:{color:'#777'}}},
         plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const p=ctx.raw;return `${p.l}: ${p.y}x fwd PE, ${p.x}β`}}}}}
     })
@@ -126,9 +130,9 @@ function BubbleChart() {
   },[])
   return <div className="chart-wrap">
     <div className="chart-title">Forward P/E vs beta — risk-adjusted valuation</div>
-    <div style={{position:'relative',height:380}}><canvas ref={ref}/></div>
+    <div style={{position:'relative',height:420}}><canvas ref={ref}/></div>
     <div className="legend">
-      {Object.entries({Memory:'#4ade80',Subsystems:'#a78bfa',Testing:'#60a5fa',Packaging:'#f472b6','WFE OEMs':'#5eead4',Compute:'#fbbf24'}).map(([n,c])=>
+      {Object.entries({Memory:'#4ade80',Subsystems:'#a78bfa',Testing:'#60a5fa',Packaging:'#f472b6','WFE OEMs':'#5eead4',Compute:'#fbbf24',Photonics:'#f97316',Materials:'#a3e635',Networking:'#38bdf8',Power:'#e879f9'}).map(([n,c])=>
         <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
       )}
       <span style={{color:'var(--t4)',fontSize:10,marginLeft:8}}>Bubble size = market cap. Bottom-left = safest value.</span>

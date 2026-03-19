@@ -16,10 +16,15 @@ const TICKERS = [
   'BESI.AS','0522.HK','AMKR','6239.TW','KLIC','042700.KS',
   '6857.T','TER','FORM','6871.T','TPRO.MI','COHU','AEHR','6515.TW','095340.KS','058470.KS','6961.T',
   'MKSI','ENTG','VACN.SW','AEIS','UCTT','ICHR','6890.T','6407.T','COTN.SW','ASYS','PDFS',
+  'LITE','COHR','AAOI','SIVE.ST','POET','MTSI','FN','HIMX','LWLG',
+  'AXTI','IQE.L','SOI.PA','GLW','5802.T',
+  'CIEN','NOK','CSCO','APH','TEL','TSEM','VIAV','KEYS',
+  'VRT','MPWR','VICR','ETN','NVT','MOD','ON','IFX.DE','SU.PA',
 ];
 
 const CURRENCY_MAP = {
   KRW: '₩', TWD: 'NT$', JPY: '¥', EUR: '€', CHF: 'CHF ', HKD: 'HK$', USD: '$',
+  GBP: '£', SEK: 'SEK ', GBp: '£',
 };
 
 function formatPrice(price, currency) {
