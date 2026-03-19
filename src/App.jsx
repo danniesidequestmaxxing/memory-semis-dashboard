@@ -17,7 +17,7 @@ function PEBar({ value }) {
 function Tier({tier,isOpen,toggle}) {
   const peColor = v => v<=18?'var(--green)':v<=30?'var(--gray)':'var(--red)'
   const fcfColor = v => v>=10?'var(--green)':v>=0?'var(--gray)':'var(--red)'
-  return <div style={{width:`${tier.width}%`,minWidth:300,transition:'width 0.3s'}}>
+  return <div style={{width:isOpen?'100%':`${tier.width}%`,minWidth:300,transition:'width 0.3s'}}>
     <div className={`tier-bar ${isOpen?'open':''}`} onClick={toggle}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,flexWrap:'wrap'}}>
         <div style={{flex:'1 1 200px',minWidth:0}}>
@@ -45,10 +45,12 @@ function Tier({tier,isOpen,toggle}) {
         <div className="info-box"><div className="info-label">Industry structure</div><div className="info-text">{tier.industry}</div></div>
         <div className="info-box value-box"><div className="info-label">Value assessment</div><div className="value-text">{tier.value}</div></div>
       </div>
+      <div style={{overflowX:'auto'}}>
       <table>
-        <thead><tr>{["Ticker","Company","Price","Fwd P/E","EV/EBITDA","Beta","FCF Yld","Mkt Cap","Source"].map(h=>
-          <th key={h} style={h==='Company'?{textAlign:'left'}:{}}>{h}</th>
-        )}</tr></thead>
+        <thead><tr>
+          <th>Ticker</th><th>Company</th><th>Price</th><th>Fwd P/E</th>
+          <th>EV/EBITDA</th><th>Beta</th><th>FCF Yld</th><th>Mkt Cap</th><th>Source</th>
+        </tr></thead>
         <tbody>{tier.cos.map((c,i)=><tr key={i}>
           <td className="mono" style={{fontWeight:600,color:TIER_COLORS[tier.id],fontSize:10}}>{c.t}</td>
           <td>{c.n}</td>
@@ -61,6 +63,7 @@ function Tier({tier,isOpen,toggle}) {
           <td style={{fontSize:8,color:'var(--t5)'}}>{c.v}</td>
         </tr>)}</tbody>
       </table>
+      </div>
     </div>}
   </div>
 }
