@@ -336,7 +336,7 @@ function SupplyChainTab({tiers}) {
             <div className="flow-tiers">
               {grouped[stream].map(t=>{
                 const margin = tierMargins.find(m=>m.id===t.id);
-                return <div key={t.id} className="flow-tier-box" style={{borderColor:TIER_COLORS[t.id]+'60'}}>
+                return <div key={t.id} className="flow-tier-box" style={{borderColor:STREAM_COLORS[stream]+'40'}}>
                   <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:2}}>
                     <span style={{fontSize:13}}>{t.icon}</span>
                     <span className="mono" style={{fontSize:10,fontWeight:700,color:'var(--t1)'}}>{t.label.split(' — ')[0]}</span>
