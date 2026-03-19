@@ -635,6 +635,123 @@ function RelativeValueTab({tiers}) {
         that confirm demand visibility for the supplier.
       </div>
     </div>
+
+    {/* Section 4: Asymmetry Score Rankings */}
+    {(() => {
+      const parseMC = mc => {
+        if (!mc || mc.startsWith('~') || mc === 'Private') return null
+        const n = parseFloat(mc.replace(/[^0-9.]/g, ''))
+        if (mc.includes('T')) return n * 1000
+        if (mc.includes('B')) return n
+        if (mc.includes('M')) return n / 1000
+        return null
+      }
+      const sizeFactor = mcB => mcB < 1 ? 3.0 : mcB < 5 ? 2.0 : mcB < 20 ? 1.5 : mcB < 100 ? 1.0 : 0.5
+
+      const scored = tiers.flatMap(tier =>
+        tier.cos.filter(c => c.t !== '—' && c.pe != null && c.pe > 0 && c.revGr != null && c.revGr > 0 && c.ebitdaMargin != null && c.ebitdaMargin > 0)
+          .map(c => {
+            const mcB = parseMC(c.mc)
+            const sf = mcB != null ? sizeFactor(mcB) : 1.0
+            const score = (c.revGr / c.pe) * (c.ebitdaMargin / 20) * sf
+            return { ...c, stream: tier.stream, tierLabel: tier.label.split(' — ')[0], score, mcB, sf }
+          })
+      ).sort((a, b) => b.score - a.score)
+
+      const top30 = scored.slice(0, 30)
+      const top5 = scored.slice(0, 5)
+      const scoreColor = (rank) => rank < 10 ? '#4ade80' : rank < 20 ? '#fbbf24' : 'var(--t3)'
+      const scoreBadge = (rank) => rank < 10 ? 'High Asymmetry' : rank < 20 ? 'Moderate' : 'Low'
+
+      return <>
+        <div className="chart-wrap">
+          <div className="chart-title">Asymmetry score: growth-adjusted value ranking</div>
+          <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+            Each company is scored on how much revenue growth you get per unit of P/E, multiplied by margin quality and a size premium
+            that rewards smaller companies where institutional attention is thinnest. The formula is
+            <span className="mono" style={{color:'var(--t2)'}}> (RevGr ÷ PE) × (EBITDA Margin ÷ 20) × Size Factor</span>.
+            Companies that combine rapid growth, strong margins, and small market caps score highest because
+            these are the characteristics that precede the largest re-ratings when the market eventually connects the dots.
+          </p>
+
+          {/* Header */}
+          <div style={{display:'flex',gap:4,padding:'6px 10px',marginBottom:4,fontSize:9,color:'var(--t4)',borderBottom:'1px solid var(--border)'}}>
+            <div style={{width:24}}>#</div>
+            <div style={{width:10}}/>
+            <div style={{width:150}}>COMPANY</div>
+            <div style={{width:50,textAlign:'right'}}>P/E</div>
+            <div style={{width:55,textAlign:'right'}}>REV GR</div>
+            <div style={{width:55,textAlign:'right'}}>EBITDA</div>
+            <div style={{width:60,textAlign:'right'}}>MKT CAP</div>
+            <div style={{width:35,textAlign:'right'}}>SIZE</div>
+            <div style={{flex:1}}/>
+            <div style={{width:55,textAlign:'right'}}>SCORE</div>
+            <div style={{width:90,textAlign:'right'}}>SIGNAL</div>
+          </div>
+
+          <div style={{display:'flex',flexDirection:'column',gap:2}}>
+            {top30.map((c, i) => <div key={c.t} className="rv-pair-row" style={{padding:'6px 10px'}}>
+              <div className="mono" style={{width:24,fontSize:10,color:'var(--t4)'}}>{i+1}</div>
+              <span style={{width:6,height:6,borderRadius:3,background:STREAM_COLORS[c.stream],flexShrink:0}}/>
+              <div style={{width:150,display:'flex',alignItems:'center',gap:4}}>
+                <span className="mono" style={{fontSize:10,fontWeight:700,color:'var(--t1)'}}>{c.t}</span>
+                <span style={{fontSize:9,color:'var(--t3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{c.n}</span>
+              </div>
+              <div className="mono" style={{width:50,fontSize:10,textAlign:'right',color:'var(--t2)'}}>{c.pe}x</div>
+              <div className="mono" style={{width:55,fontSize:10,textAlign:'right',color:'var(--green)'}}>+{c.revGr}%</div>
+              <div className="mono" style={{width:55,fontSize:10,textAlign:'right',color:'var(--t2)'}}>{c.ebitdaMargin}%</div>
+              <div className="mono" style={{width:60,fontSize:9,textAlign:'right',color:'var(--t3)'}}>{c.mc}</div>
+              <div className="mono" style={{width:35,fontSize:9,textAlign:'right',color:c.sf>=2?'#4ade80':c.sf>=1.5?'#86efac':'var(--t4)'}}>{c.sf}x</div>
+              <div style={{flex:1}}/>
+              <div className="mono" style={{width:55,fontSize:12,fontWeight:700,textAlign:'right',color:scoreColor(i)}}>{c.score.toFixed(1)}</div>
+              <div style={{width:90,textAlign:'right'}}>
+                <span style={{fontSize:9,fontWeight:600,padding:'1px 6px',borderRadius:3,background:scoreColor(i)+'20',color:scoreColor(i)}}>
+                  {scoreBadge(i)}
+                </span>
+              </div>
+            </div>)}
+          </div>
+
+          <div className="legend" style={{marginTop:10}}>
+            {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+              <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+            )}
+            <span style={{color:'var(--t4)',fontSize:9,marginLeft:8}}>Size factor: &lt;$1B=3x, $1-5B=2x, $5-20B=1.5x, $20-100B=1x, &gt;$100B=0.5x</span>
+          </div>
+        </div>
+
+        {/* Top 5 interpretation */}
+        <div className="chart-wrap">
+          <div className="chart-title">Top asymmetry opportunities</div>
+          <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+            These five companies score highest on the composite asymmetry metric. They combine above-average revenue growth
+            with reasonable valuations, healthy margins, and small enough market caps that institutional discovery is still
+            in early stages. These are not recommendations — they are the names where the data suggests the market has the
+            most room to re-rate if the AI supply chain thesis plays out.
+          </p>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {top5.map((c, i) => <div key={c.t} style={{padding:'12px 16px',background:'rgba(74,222,128,0.05)',borderRadius:8,borderLeft:'3px solid #4ade80'}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                <span className="mono" style={{fontSize:14,fontWeight:700,color:'var(--t4)'}}>{i+1}</span>
+                <span style={{width:8,height:8,borderRadius:4,background:STREAM_COLORS[c.stream]}}/>
+                <span className="mono" style={{fontSize:13,fontWeight:700,color:'var(--t1)'}}>{c.t}</span>
+                <span style={{fontSize:11,color:'var(--t3)'}}>{c.n}</span>
+                <span style={{flex:1}}/>
+                <span className="mono" style={{fontSize:14,fontWeight:700,color:'#4ade80'}}>{c.score.toFixed(1)}</span>
+              </div>
+              <div style={{fontSize:11,color:'var(--t3)',lineHeight:1.6}}>
+                <strong style={{color:'var(--t2)'}}>{c.n}</strong> generates {c.revGr}% revenue growth at just {c.pe}x forward earnings,
+                with {c.ebitdaMargin}% EBITDA margins. At a market cap of {c.mc}, it receives a {c.sf}x size premium because
+                {c.sf >= 2 ? ' institutional coverage is thin and the re-rating potential is highest when discovery accelerates' :
+                 c.sf >= 1.5 ? ' it sits in the mid-cap sweet spot where growth investors are just beginning to build positions' :
+                 ' it is already well-covered but the growth-to-valuation ratio remains compelling'}.
+                Tier: {c.tierLabel}.
+              </div>
+            </div>)}
+          </div>
+        </div>
+      </>
+    })()}
   </>
 }
 
