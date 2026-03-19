@@ -142,6 +142,15 @@ function BubbleChart() {
       )}
       <span style={{color:'var(--t4)',fontSize:10,marginLeft:8}}>Bubble size = market cap. Bottom-left = safest value.</span>
     </div>
+    <div style={{marginTop:20,padding:'16px 20px',background:'#ffffff06',borderRadius:8,border:'1px solid #ffffff0a'}}>
+      <div style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:700,color:'var(--t2)',marginBottom:10}}>How to read this chart</div>
+      <div style={{fontSize:12,color:'var(--t3)',lineHeight:1.7}}>
+        <p style={{margin:'0 0 8px'}}>This chart plots every company's <strong style={{color:'var(--t2)'}}>forward P/E</strong> (what investors pay per dollar of future earnings) against its <strong style={{color:'var(--t2)'}}>beta</strong> (how much the stock moves relative to the market). A beta of 1.0 means the stock tracks the S&P 500; above 1.5 means it swings 50% harder in both directions.</p>
+        <p style={{margin:'0 0 8px'}}>The <strong style={{color:'var(--t2)'}}>bottom-left quadrant</strong> is the sweet spot: low valuation and low volatility. Companies here offer the most defensive risk-adjusted value. The <strong style={{color:'var(--t2)'}}>top-right quadrant</strong> is the opposite: you are paying a premium multiple for a stock that whips around aggressively.</p>
+        <p style={{margin:'0 0 8px'}}>Bubble size represents market capitalisation, so the largest circles are the megacaps that anchor each tier. Notice that <strong style={{color:'#fbbf24'}}>downstream</strong> names (memory, compute) tend to cluster with high beta because their earnings are directly tied to the AI capex cycle. <strong style={{color:'#60a5fa'}}>Midstream</strong> equipment and packaging names carry high P/Es because the market prices in long equipment upgrade cycles. <strong style={{color:'#4ade80'}}>Upstream</strong> materials sit lower on both axes since they are smaller, less liquid, and often overlooked by institutional investors, which is precisely where mispricing tends to hide.</p>
+        <p style={{margin:0}}>If a small green bubble sits in the bottom-left while its downstream customers sit in the top-right, that upstream supplier may be undervalued relative to the demand it enables.</p>
+      </div>
+    </div>
   </div>
 }
 
