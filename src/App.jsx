@@ -218,6 +218,11 @@ function MedianBars({tiers}) {
   const peColor = v => v<=18?'var(--green)':v<=30?'var(--gray)':'var(--red)'
   return <div className="chart-wrap">
     <div className="chart-title">Median forward P/E by supply chain layer</div>
+    <div className="legend" style={{marginBottom:8}}>
+      {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+        <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+      )}
+    </div>
     <div style={{display:'flex',flexDirection:'column',gap:5}}>
       {sorted.map(t=><div key={t.id} style={{display:'flex',alignItems:'center',gap:8}}>
         <div style={{width:100,fontSize:10,color:'var(--t4)',textAlign:'right',flexShrink:0}}>{t.label.split('—')[0].trim()}</div>
