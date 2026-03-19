@@ -29,7 +29,7 @@ function Tier({tier,isOpen,toggle}) {
         <div style={{display:'flex',gap:14,alignItems:'center',flexShrink:0}}>
           {[
             {l:'Med P/E',v:tier.medPE,f:v=>v+'x',c:peColor(tier.medPE)},
-            {l:'Med EV/EB',v:tier.medEV,f:v=>v+'x',c:'var(--t2)'},
+            {l:'Med EV/EBITDA',v:tier.medEV,f:v=>v+'x',c:'var(--t2)'},
             {l:'Med FCF',v:tier.medFCF,f:v=>(v>0?'+':'')+v+'%',c:fcfColor(tier.medFCF)},
           ].map(m=><div key={m.l} style={{textAlign:'center'}}>
             <div style={{fontSize:8,color:'var(--t4)',textTransform:'uppercase',letterSpacing:'0.06em'}}>{m.l}</div>
@@ -45,6 +45,39 @@ function Tier({tier,isOpen,toggle}) {
         <div className="info-box"><div className="info-label">Industry structure</div><div className="info-text">{tier.industry}</div></div>
         <div className="info-box value-box"><div className="info-label">Value assessment</div><div className="value-text">{tier.value}</div></div>
       </div>
+
+      {/* Per-tier valuation bar chart */}
+      {(()=>{
+        const withPE = tier.cos.filter(c=>c.pe!=null).sort((a,b)=>a.pe-b.pe);
+        const max = Math.max(...withPE.map(c=>c.pe),1);
+        return withPE.length > 0 && <div style={{marginBottom:14}}>
+          <div style={{fontSize:9,color:'var(--t4)',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:6}}>Forward P/E comparison</div>
+          <div style={{display:'flex',flexDirection:'column',gap:3}}>
+            {withPE.map(c=><div key={c.t} style={{display:'flex',alignItems:'center',gap:6}}>
+              <div className="mono" style={{width:70,fontSize:9,color:'var(--t3)',textAlign:'right',flexShrink:0}}>{c.n.length>10?c.t:c.n}</div>
+              <div style={{flex:1,height:14,background:'var(--bg)',borderRadius:3,overflow:'hidden'}}>
+                <div style={{width:`${(c.pe/max)*100}%`,height:'100%',background:TIER_COLORS[tier.id],borderRadius:3,opacity:0.5}}/>
+              </div>
+              <div className="mono" style={{fontSize:10,fontWeight:600,color:peColor(c.pe),width:30,textAlign:'right'}}>{c.pe}x</div>
+            </div>)}
+          </div>
+        </div>;
+      })()}
+
+      {/* Company profile cards */}
+      <div className="profile-grid">
+        {tier.cos.map((c,i)=><div key={i} className="profile-card">
+          <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
+            <span className="mono" style={{fontSize:10,fontWeight:700,color:TIER_COLORS[tier.id]}}>{c.t}</span>
+            <span style={{fontSize:11,fontWeight:600,color:'var(--t1)'}}>{c.n}</span>
+            <span className="mono" style={{fontSize:9,color:'var(--t4)',marginLeft:'auto'}}>{c.mc}</span>
+          </div>
+          <div style={{fontSize:10,color:'var(--t2)',marginBottom:3}}>{c.desc}</div>
+          <div style={{fontSize:9,color:'var(--t3)'}}><strong style={{color:'var(--t2)'}}>Products:</strong> {c.products}</div>
+          <div style={{fontSize:9,color:'var(--t3)'}}><strong style={{color:'var(--t2)'}}>Clients:</strong> {c.clients}</div>
+        </div>)}
+      </div>
+
       <div style={{overflowX:'auto'}}>
       <table>
         <thead><tr>
