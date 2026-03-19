@@ -103,12 +103,12 @@ function BubbleChart() {
   </div>
 }
 
-function FCFChart() {
+function FCFChart({tiers}) {
   const ref = useRef(null)
   const chartRef = useRef(null)
   useEffect(()=>{
     if(chartRef.current) chartRef.current.destroy()
-    const all = TIERS.flatMap(t=>t.cos.filter(c=>c.fcf!=null&&c.fcf>0).map(c=>({n:c.n,v:c.fcf,c:TIER_COLORS[t.id]})))
+    const all = tiers.flatMap(t=>t.cos.filter(c=>c.fcf!=null&&c.fcf>0).map(c=>({n:c.n,v:c.fcf,c:TIER_COLORS[t.id]})))
     all.sort((a,b)=>b.v-a.v)
     const top = all.slice(0,25)
     chartRef.current = new Chart(ref.current,{
@@ -120,19 +120,19 @@ function FCFChart() {
         plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.toFixed(1)}% FCF yield`}}}}
     })
     return ()=>{ if(chartRef.current) chartRef.current.destroy() }
-  },[])
+  },[tiers])
   return <div className="chart-wrap">
     <div className="chart-title">FCF yield — who's generating cash (top 25)</div>
     <div style={{position:'relative',height:520}}><canvas ref={ref}/></div>
   </div>
 }
 
-function GrowthChart() {
+function GrowthChart({tiers}) {
   const ref = useRef(null)
   const chartRef = useRef(null)
   useEffect(()=>{
     if(chartRef.current) chartRef.current.destroy()
-    const all = TIERS.flatMap(t=>t.cos.filter(c=>c.revGr!=null&&c.revGr>0).map(c=>({n:c.n,v:c.revGr,c:TIER_COLORS[t.id]})))
+    const all = tiers.flatMap(t=>t.cos.filter(c=>c.revGr!=null&&c.revGr>0).map(c=>({n:c.n,v:c.revGr,c:TIER_COLORS[t.id]})))
     all.sort((a,b)=>b.v-a.v)
     const top = all.slice(0,30)
     chartRef.current = new Chart(ref.current,{
@@ -144,15 +144,15 @@ function GrowthChart() {
         plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`+${ctx.raw}% est. revenue growth`}}}}
     })
     return ()=>{ if(chartRef.current) chartRef.current.destroy() }
-  },[])
+  },[tiers])
   return <div className="chart-wrap">
     <div className="chart-title">Forward revenue growth — who's accelerating</div>
     <div style={{position:'relative',height:560}}><canvas ref={ref}/></div>
   </div>
 }
 
-function MedianBars() {
-  const sorted = [...TIERS].sort((a,b)=>(a.medPE||99)-(b.medPE||99))
+function MedianBars({tiers}) {
+  const sorted = [...tiers].sort((a,b)=>(a.medPE||99)-(b.medPE||99))
   const max = Math.max(...sorted.map(t=>t.medPE||0))
   const peColor = v => v<=18?'var(--green)':v<=30?'var(--gray)':'var(--red)'
   return <div className="chart-wrap">
@@ -185,17 +185,70 @@ function Gaps() {
   </div>
 }
 
+function mergeLiveData(staticTiers, liveData) {
+  return staticTiers.map(tier => {
+    const updatedCos = tier.cos.map(co => {
+      if (!co.yf || !liveData[co.yf]) return co;
+      const live = liveData[co.yf];
+      return {
+        ...co,
+        px: live.px || co.px,
+        pe: live.pe ?? co.pe,
+        ev: live.ev ?? co.ev,
+        beta: live.beta ?? co.beta,
+        fcf: live.fcf ?? co.fcf,
+        mc: live.mc || co.mc,
+        v: live.v || co.v,
+      };
+    });
+    // Recalculate tier medians from updated company data
+    const withPE = updatedCos.filter(c => c.pe != null);
+    const withEV = updatedCos.filter(c => c.ev != null);
+    const withFCF = updatedCos.filter(c => c.fcf != null);
+    const median = arr => { const s = [...arr].sort((a,b)=>a-b); const m = Math.floor(s.length/2); return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2); };
+    return {
+      ...tier,
+      cos: updatedCos,
+      medPE: withPE.length ? median(withPE.map(c=>c.pe)) : tier.medPE,
+      medEV: withEV.length ? median(withEV.map(c=>c.ev)) : tier.medEV,
+      medFCF: withFCF.length ? median(withFCF.map(c=>c.fcf)) : tier.medFCF,
+    };
+  });
+}
+
+function DataStatus({isLive, updated}) {
+  return <span style={{fontSize:9,padding:'2px 6px',borderRadius:4,marginLeft:8,
+    background:isLive?'rgba(74,222,128,0.15)':'rgba(239,68,68,0.15)',
+    color:isLive?'var(--green)':'var(--red)',fontWeight:600,letterSpacing:'0.04em'}}>
+    {isLive ? `LIVE ${updated}` : 'STATIC'}
+  </span>;
+}
+
 export default function App() {
   const [tab,setTab] = useState('pyramid')
   const [open,setOpen] = useState('demand')
+  const [tiers,setTiers] = useState(TIERS)
+  const [dataStatus,setDataStatus] = useState({isLive:false,updated:null})
   const tabs = [['pyramid','Pyramid'],['scatter','PE vs Beta'],['fcf','FCF Yield'],['growth','Rev Growth'],['gaps','Valuation Gaps']]
+
+  useEffect(()=>{
+    fetch('/api/market-data')
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(({updated,data})=>{
+        setTiers(mergeLiveData(TIERS, data));
+        setDataStatus({isLive:true,updated});
+      })
+      .catch(()=>setDataStatus({isLive:false,updated:null}));
+  },[])
 
   return <div className="container">
     <div style={{padding:'20px 0 4px'}}>
-      <h1>AI memory supply chain <span>valuation pyramid</span></h1>
+      <h1>AI memory supply chain <span>valuation pyramid</span> <DataStatus {...dataStatus}/></h1>
       <p className="subtitle">
-        {TIERS.reduce((a,t)=>a+t.cos.length,0)} companies across {TIERS.length} layers. Capital flows top→down, valuation efficiency decreases.
-        Prices mostly 3/18 close; MU updated for 3/20 post-earnings. Market down 3/19-20 (Fed + geopolitical).
+        {tiers.reduce((a,t)=>a+t.cos.length,0)} companies across {tiers.length} layers. Capital flows top→down, valuation efficiency decreases.
+        {dataStatus.isLive
+          ? ` Prices via Yahoo Finance, updated ${dataStatus.updated}. Refreshed daily.`
+          : ' Prices mostly 3/18 close; MU updated for 3/20 post-earnings. Market down 3/19-20 (Fed + geopolitical).'}
       </p>
     </div>
 
@@ -205,21 +258,22 @@ export default function App() {
 
     {tab==='pyramid' && <>
       <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
-        {TIERS.map(t=><Tier key={t.id} tier={t} isOpen={open===t.id} toggle={()=>setOpen(open===t.id?null:t.id)}/>)}
+        {tiers.map(t=><Tier key={t.id} tier={t} isOpen={open===t.id} toggle={()=>setOpen(open===t.id?null:t.id)}/>)}
       </div>
-      <MedianBars/>
+      <MedianBars tiers={tiers}/>
     </>}
     {tab==='scatter' && <BubbleChart/>}
-    {tab==='fcf' && <FCFChart/>}
-    {tab==='growth' && <GrowthChart/>}
+    {tab==='fcf' && <FCFChart tiers={tiers}/>}
+    {tab==='growth' && <GrowthChart tiers={tiers}/>}
     {tab==='gaps' && <Gaps/>}
 
     <div className="method">
       <div className="method-title">Data sources & methodology</div>
       <div className="method-text">
-        <strong>Prices (3/20/2026):</strong> Most US = Yahoo Finance 3/18 close. MU ~$420 post-ER selloff (reported 3/18: rev $23.9B, guided Q3 $33.5B). KRX from Investing.com 3/19. TWSE/TSE/HKEX/SWX marked "est." Market down 3/19-20 on Fed hold + Iran-Qatar shock — most names 2-5% below shown.
-        <strong> Forward P/E:</strong> StockAnalysis (FORM 26.1x, AMAT 33.9x, ONTO 27.0x), GuruFocus (BESI 54.2x), Morningstar (NVDA 37.7x). MU recalculated ~7x on NTM ~$60 EPS.
-        <strong> For live data:</strong> Connect S&P Capital IQ, Bloomberg DAPI, or Financial Modeling Prep ($15/mo).
+        {dataStatus.isLive
+          ? <><strong>Live data ({dataStatus.updated}):</strong> Prices, P/E, EV/EBITDA, beta, FCF yield, and market cap from Yahoo Finance. Refreshed daily at 6:35 AM ET via Vercel cron. Some international tickers may fall back to static data if unavailable.</>
+          : <><strong>Prices (3/20/2026):</strong> Most US = Yahoo Finance 3/18 close. MU ~$420 post-ER selloff (reported 3/18: rev $23.9B, guided Q3 $33.5B). KRX from Investing.com 3/19. TWSE/TSE/HKEX/SWX marked "est." Market down 3/19-20 on Fed hold + Iran-Qatar shock — most names 2-5% below shown.
+        <strong> Forward P/E:</strong> StockAnalysis (FORM 26.1x, AMAT 33.9x, ONTO 27.0x), GuruFocus (BESI 54.2x), Morningstar (NVDA 37.7x). MU recalculated ~7x on NTM ~$60 EPS.</>}
         <strong> Not investment advice.</strong>
       </div>
     </div>

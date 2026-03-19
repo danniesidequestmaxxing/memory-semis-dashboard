@@ -1,5 +1,11 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite"
+  "framework": "vite",
+  "crons": [
+    {
+      "path": "/api/market-data",
+      "schedule": "35 10 * * 1-5"
+    }
+  ]
 }
