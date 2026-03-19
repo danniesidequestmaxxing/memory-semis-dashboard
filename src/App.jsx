@@ -273,6 +273,8 @@ function mergeLiveData(staticTiers, liveData) {
         fcf: live.fcf ?? co.fcf,
         ebitdaMargin: live.ebitdaMargin ?? co.ebitdaMargin,
         mc: live.mc || co.mc,
+        mom50d: live.mom50d ?? co.mom50d ?? null,
+        mom200d: live.mom200d ?? co.mom200d ?? null,
         v: live.v || co.v,
       };
     });
@@ -751,6 +753,115 @@ function RelativeValueTab({tiers}) {
           </div>
         </div>
       </>
+    })()}
+
+    {/* Section 5: Supply Chain Lag Detector */}
+    {(() => {
+      const lagPairs = SUPPLY_CHAIN_PAIRS.map(p => {
+        const sup = coMap[p.supplier]
+        const cust = coMap[p.customer]
+        if (!sup || !cust) return null
+        if (sup.mom50d == null || cust.mom50d == null) return null
+        const gap = cust.mom50d - sup.mom50d
+        return { ...p, sup, cust, gap, supMom: sup.mom50d, custMom: cust.mom50d }
+      }).filter(Boolean).sort((a, b) => b.gap - a.gap)
+
+      const maxGap = Math.max(...lagPairs.map(p => Math.abs(p.gap)), 1)
+      const lagSignal = gap => gap > 15 ? 'Strong lag' : gap > 8 ? 'Moderate lag' : gap > 0 ? 'Mild lag' : 'Aligned'
+      const lagColor = gap => gap > 15 ? '#4ade80' : gap > 8 ? '#86efac' : gap > 0 ? 'var(--gray)' : '#fca5a5'
+      const momColor = m => m > 5 ? '#4ade80' : m > 0 ? '#86efac' : m > -5 ? 'var(--gray)' : m > -15 ? '#fca5a5' : '#ef4444'
+
+      const topLags = lagPairs.filter(p => p.gap > 8).slice(0, 5)
+
+      return lagPairs.length > 0 ? <>
+        <div className="chart-wrap">
+          <div className="chart-title">Supply chain lag detector</div>
+          <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+            When a downstream company rallies but its upstream supplier has not followed, the market is telling you it has not yet
+            connected the demand signal to the supplier. Historically, these lags close over 2-8 weeks as sell-side analysts update
+            estimates and institutional investors rotate up the supply chain. The gap column shows how many percentage points the
+            customer's 50-day momentum exceeds the supplier's. Larger gaps indicate stronger catch-up potential.
+          </p>
+
+          <div style={{display:'flex',gap:4,padding:'6px 10px',marginBottom:4,fontSize:9,color:'var(--t4)',borderBottom:'1px solid var(--border)'}}>
+            <div style={{width:120}}>SUPPLIER</div>
+            <div style={{width:60,textAlign:'right'}}>50D MOM</div>
+            <div style={{width:20}}/>
+            <div style={{width:120}}>CUSTOMER</div>
+            <div style={{width:60,textAlign:'right'}}>50D MOM</div>
+            <div style={{flex:1}}/>
+            <div style={{width:60,textAlign:'right'}}>GAP</div>
+            <div style={{width:90,textAlign:'right'}}>SIGNAL</div>
+          </div>
+
+          <div style={{display:'flex',flexDirection:'column',gap:2}}>
+            {lagPairs.map((p, i) => <div key={i} className="rv-pair-row" style={{padding:'6px 10px'}}>
+              <div style={{width:120,display:'flex',alignItems:'center',gap:4}}>
+                <span style={{width:6,height:6,borderRadius:3,background:STREAM_COLORS[p.sup.stream],flexShrink:0}}/>
+                <span className="mono" style={{fontSize:10,fontWeight:600,color:'var(--t1)'}}>{p.supplier}</span>
+              </div>
+              <div className="mono" style={{width:60,fontSize:10,textAlign:'right',color:momColor(p.supMom)}}>
+                {p.supMom > 0 ? '+' : ''}{p.supMom}%
+              </div>
+              <div style={{width:20,textAlign:'center',fontSize:9,color:'var(--t4)'}}>→</div>
+              <div style={{width:120,display:'flex',alignItems:'center',gap:4}}>
+                <span style={{width:6,height:6,borderRadius:3,background:STREAM_COLORS[p.cust.stream],flexShrink:0}}/>
+                <span className="mono" style={{fontSize:10,fontWeight:600,color:'var(--t1)'}}>{p.customer}</span>
+              </div>
+              <div className="mono" style={{width:60,fontSize:10,textAlign:'right',color:momColor(p.custMom)}}>
+                {p.custMom > 0 ? '+' : ''}{p.custMom}%
+              </div>
+              <div style={{flex:1,height:8,background:'var(--bg)',borderRadius:4,overflow:'hidden',margin:'0 8px'}}>
+                <div style={{width:`${Math.min(Math.abs(p.gap)/maxGap,1)*100}%`,height:'100%',background:lagColor(p.gap),opacity:0.5,borderRadius:4}}/>
+              </div>
+              <div className="mono" style={{width:60,fontSize:11,fontWeight:700,textAlign:'right',color:lagColor(p.gap)}}>
+                {p.gap > 0 ? '+' : ''}{p.gap.toFixed(1)}pp
+              </div>
+              <div style={{width:90,textAlign:'right'}}>
+                <span style={{fontSize:9,fontWeight:600,padding:'1px 6px',borderRadius:3,background:lagColor(p.gap)+'20',color:lagColor(p.gap)}}>
+                  {lagSignal(p.gap)}
+                </span>
+              </div>
+            </div>)}
+          </div>
+
+          <div className="legend" style={{marginTop:10}}>
+            {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+              <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+            )}
+            <span style={{color:'var(--t4)',fontSize:9,marginLeft:8}}>50D MOM = price vs 50-day moving average. GAP = customer momentum minus supplier momentum.</span>
+          </div>
+        </div>
+
+        {topLags.length > 0 && <div className="chart-wrap">
+          <div className="chart-title">Strongest lag signals: suppliers trailing their customers</div>
+          <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
+            These supplier-customer pairs show the widest momentum divergence. The customer has rallied significantly above
+            its 50-day average while the supplier has lagged behind, creating a potential catch-up trade. The thesis is simple:
+            if the customer's demand is real (confirmed by its stock moving higher), the supplier's revenue will follow, and the
+            supplier's stock should re-rate accordingly.
+          </p>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {topLags.map((p, i) => <div key={i} style={{padding:'12px 16px',background:'rgba(74,222,128,0.05)',borderRadius:8,borderLeft:'3px solid #4ade80'}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                <span className="mono" style={{fontSize:13,fontWeight:700,color:STREAM_COLORS[p.sup.stream]}}>{p.supplier}</span>
+                <span className="mono" style={{fontSize:10,color:momColor(p.supMom)}}>{p.supMom>0?'+':''}{p.supMom}%</span>
+                <span style={{fontSize:10,color:'var(--t5)'}}>→</span>
+                <span className="mono" style={{fontSize:13,fontWeight:700,color:STREAM_COLORS[p.cust.stream]}}>{p.customer}</span>
+                <span className="mono" style={{fontSize:10,color:momColor(p.custMom)}}>{p.custMom>0?'+':''}{p.custMom}%</span>
+                <span style={{flex:1}}/>
+                <span className="mono" style={{fontSize:14,fontWeight:700,color:'#4ade80'}}>+{p.gap.toFixed(1)}pp gap</span>
+              </div>
+              <div style={{fontSize:11,color:'var(--t3)',lineHeight:1.6}}>
+                <strong style={{color:'var(--t2)'}}>{p.cust.n}</strong> is trading {p.custMom > 0 ? p.custMom.toFixed(1)+'% above' : Math.abs(p.custMom).toFixed(1)+'% below'} its
+                50-day average, while <strong style={{color:'var(--t2)'}}>{p.sup.n}</strong> is {p.supMom > 0 ? 'only '+p.supMom.toFixed(1)+'% above' : Math.abs(p.supMom).toFixed(1)+'% below'} its
+                own 50-day average. The {p.gap.toFixed(0)} percentage point divergence in the {p.rel} relationship suggests the market has priced in
+                demand at the customer level but has not yet rotated into the supplier. If this demand is durable, the supplier should follow.
+              </div>
+            </div>)}
+          </div>
+        </div>}
+      </> : null
     })()}
   </>
 }

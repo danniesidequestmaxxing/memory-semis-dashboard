@@ -58,14 +58,19 @@ export default async function handler(req, res) {
           if (!quote) return;
 
           const currency = quote.currency || 'USD';
+          const rawPrice = quote.regularMarketPrice;
+          const avg50 = quote.fiftyDayAverage;
+          const avg200 = quote.twoHundredDayAverage;
           // For non-USD market caps, Yahoo already gives USD marketCap
           results[ticker] = {
-            px: formatPrice(quote.regularMarketPrice, currency),
+            px: formatPrice(rawPrice, currency),
             pe: quote.forwardPE ? Math.round(quote.forwardPE) : (quote.trailingPE ? Math.round(quote.trailingPE) : null),
             ev: null, // will fill from quoteSummary
             beta: quote.beta ? parseFloat(quote.beta.toFixed(2)) : null,
             mc: formatMarketCap(quote.marketCap),
             fcf: null, // will fill from quoteSummary
+            mom50d: (rawPrice && avg50) ? parseFloat(((rawPrice - avg50) / avg50 * 100).toFixed(1)) : null,
+            mom200d: (rawPrice && avg200) ? parseFloat(((rawPrice - avg200) / avg200 * 100).toFixed(1)) : null,
             v: `Yahoo ${now}`,
           };
         } catch (e) {
