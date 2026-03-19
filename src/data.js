@@ -7,9 +7,9 @@
 export const TIERS = [
   {
     id:"demand", label:"DEMAND — Capital deployers", icon:"☁️",
-    what:"These are the entities deploying the capital — collectively committing $660–690B in combined capex in 2026, consuming roughly 90% of their operating cash flow and issuing over $400B in debt to fund the buildout.",
+    what:"These are the entities deploying the capital, collectively committing $660-690B in combined capex in 2026, consuming roughly 90% of their operating cash flow and issuing over $400B in debt to fund the buildout.",
     industry:"The market structure is winner-take-most, with balance sheets large enough to absorb virtually unlimited investment. Constraints are on the supply side, not the demand side.",
-    value:"These companies are fully valued and are not the primary trade — they are the catalyst that drives earnings across every tier below them.",
+    value:"These companies are fully valued and are not the primary trade. They are the catalyst that drives earnings across every tier below them.",
     medPE:28, medEV:22, medFCF:-10,
     cos:[
       {t:"AMZN",n:"Amazon",px:"$195.50",pe:35,ev:28,mc:"$2.1T",v:"Yahoo 3/18",beta:1.15,fcf:2.1,revGr:12,yf:"AMZN",desc:"Amazon is the largest cloud provider globally through AWS and is developing custom Trainium silicon to reduce dependence on third-party AI accelerators.",products:"AWS, Trainium, Inferentia, data centers",clients:"Enterprises, startups, government"},
@@ -38,7 +38,7 @@ export const TIERS = [
   },
   {
     id:"foundry", label:"FOUNDRY — Where chips get made", icon:"🏭",
-    what:"TSMC commands approximately 70% of leading-edge foundry capacity and is investing $190–200B over three years, with CoWoS advanced packaging emerging as a critical bottleneck. Intel is ramping its 18A process, while GlobalFoundries and UMC represent specialty-node value plays.",
+    what:"TSMC commands approximately 70% of leading-edge foundry capacity and is investing $190-200B over three years, with CoWoS advanced packaging emerging as a critical bottleneck. Intel is ramping its 18A process, while GlobalFoundries and UMC represent specialty-node value plays.",
     industry:"The leading-edge foundry market functions as a natural monopoly, while Chinese manufacturers are flooding mature trailing-edge nodes. Specialty-node foundries are structurally undervalued relative to their recurring demand profiles.",
     value:"TSMC is fairly valued at approximately 22x earnings. GlobalFoundries trades at 3.2x price-to-sales versus a peer average of 13x, and UMC at 14x earnings is the cheapest foundry in the peer group.",
     medPE:22, medEV:8, medFCF:15,
@@ -54,7 +54,7 @@ export const TIERS = [
     id:"memory", label:"MEMORY — The bottleneck", icon:"💾",
     what:"Micron reported earnings on March 18 with revenue tripling to $23.9B and Q3 guidance of $33.5B, driven by DDR4 trading at a premium to DDR5, panic buying across the industry, and MLC NAND prices declining 41.7% year-over-year.",
     industry:"The Big 3 players control roughly 95% of the market in a stable oligopoly, AI-driven demand for DRAM is structurally elevated, and HBM supply is expected to remain constrained through 2027.",
-    value:"SK Hynix trades at approximately 8x and Micron at roughly 7x post-earnings — the cheapest large-cap valuations in the semiconductor space — while legacy pure-plays like Nanya at 18x and ESMT at 15x offer cyclical asymmetry.",
+    value:"SK Hynix trades at approximately 8x and Micron at roughly 7x post-earnings, making them the cheapest large-cap valuations in the semiconductor space. Legacy pure-plays like Nanya at 18x and ESMT at 15x offer cyclical asymmetry.",
     medPE:13, medEV:10, medFCF:25,
     cos:[
       {t:"000660",n:"SK Hynix",px:"₩1,013,000",pe:8,ev:7.5,mc:"$435B",v:"Investing 3/19",beta:1.4,fcf:5.5,revGr:40,yf:"000660.KS",desc:"SK Hynix is the world's second-largest DRAM manufacturer and the clear leader in the high-bandwidth memory market, holding approximately 50% of HBM supply share and supplying NVIDIA's flagship AI accelerators.",products:"HBM3E, DDR5, LPDDR5X, NAND",clients:"NVIDIA, Apple, hyperscalers"},
@@ -69,7 +69,7 @@ export const TIERS = [
     id:"wfe", label:"WFE OEMs — Fab equipment makers", icon:"🔧",
     what:"This tier covers deposition, etch, lithography, and inspection equipment, with ASML holding a monopoly on EUV scanners. Advanced process nodes require over 1,500 manufacturing steps, and each successive node transition increases fab cost by approximately 30%.",
     industry:"The wafer fab equipment market is a segmented oligopoly with very high barriers to entry, and the current upcycle is already substantially priced into OEM-level valuations.",
-    value:"Most names trade at fair value in the 30–38x range. Onto Innovation at 27x with a PEG ratio of 0.86 represents the best value in the group, Lam Research at 25x is reasonable, and ASM International at 38x commands a premium for its ALD technology leadership.",
+    value:"Most names trade at fair value in the 30-38x range. Onto Innovation at 27x with a PEG ratio of 0.86 represents the best value in the group, Lam Research at 25x is reasonable, and ASM International at 38x commands a premium for its ALD technology leadership.",
     medPE:32, medEV:25, medFCF:22,
     cos:[
       {t:"ASML",n:"ASML",px:"€780",pe:32,ev:28,mc:"$315B",v:"AMS 3/18",beta:1.2,fcf:1.8,revGr:20,yf:"ASML",desc:"ASML is the sole manufacturer of extreme ultraviolet lithography systems in the world, giving it an absolute monopoly on the patterning equipment required for leading-edge chip production.",products:"EUV scanners, DUV immersion, metrology",clients:"TSMC, Samsung, Intel, SK Hynix"},
@@ -98,12 +98,12 @@ export const TIERS = [
   },
   {
     id:"testing", label:"TESTING — Quality control & consumables", icon:"🔬",
-    what:"This tier encompasses automated test equipment (with Advantest holding 60–70% share), wafer probers, handlers, and burn-in systems, as well as high-margin recurring consumables such as probe cards and test sockets. HBM is the most complex memory structure to test, driving premium content per chip.",
+    what:"This tier encompasses automated test equipment (with Advantest holding 60-70% share), wafer probers, handlers, and burn-in systems, as well as high-margin recurring consumables such as probe cards and test sockets. HBM is the most complex memory structure to test, driving premium content per chip.",
     industry:"The ATE market is an oligopoly, while consumables suppliers occupy defensible niche leadership positions. The consumable nature of probe cards and sockets creates predictable recurring revenue streams tied to wafer starts.",
     value:"Valuations are wide across the group. FormFactor at 26x has already run up over 320%, while Micronics Japan at 18x and ISC at 14x offer comparable HBM exposure at more attractive entry points.",
     medPE:22, medEV:15, medFCF:18,
     cos:[
-      {t:"6857",n:"Advantest",px:"¥9,200",pe:35,ev:30,mc:"$55B",v:"TSE est",beta:1.5,fcf:1.8,revGr:25,yf:"6857.T",desc:"Advantest is the dominant global supplier of automated test equipment with 60–70% market share, and its platforms have become the de facto standard for testing high-bandwidth memory devices.",products:"V93000, T2000 ATE platforms",clients:"SK Hynix, Samsung, MU, TSMC OSAT"},
+      {t:"6857",n:"Advantest",px:"¥9,200",pe:35,ev:30,mc:"$55B",v:"TSE est",beta:1.5,fcf:1.8,revGr:25,yf:"6857.T",desc:"Advantest is the dominant global supplier of automated test equipment with 60-70% market share, and its platforms have become the de facto standard for testing high-bandwidth memory devices.",products:"V93000, T2000 ATE platforms",clients:"SK Hynix, Samsung, MU, TSMC OSAT"},
       {t:"TER",n:"Teradyne",px:"$290",pe:42,ev:35,mc:"$47B",v:"CompMktCap",beta:1.3,fcf:1.5,revGr:20,yf:"TER",desc:"Teradyne is the second-largest ATE supplier globally, offering platforms for both SOC and memory testing, while also holding a leadership position in collaborative robotics through its Universal Robots subsidiary.",products:"UltraFLEX, J750, Magnum ATE, cobots",clients:"Apple supply chain, IDMs, OSAT"},
       {t:"FORM",n:"FormFactor",px:"$95.93",pe:26,ev:27,mc:"$7.5B",v:"Robinhood 3/18",beta:1.5,fcf:0.2,revGr:32,yf:"FORM",desc:"FormFactor is the number one probe card manufacturer globally, producing the MEMS-based probe cards that are critical infrastructure for wafer-level testing of high-bandwidth memory.",products:"MEMS probe cards, probe stations",clients:"SK Hynix, Samsung, MU, Intel"},
       {t:"6871",n:"Micronics JP",px:"¥5,800",pe:18,ev:15,mc:"$1.8B",v:"TSE est",beta:1.2,fcf:3.0,revGr:18,yf:"6871.T",desc:"Micronics Japan is the second-largest probe card manufacturer globally, benefiting directly from the growing demand for HBM probe cards as Japanese memory fabs expand production.",products:"MEMS probe cards, cantilever probes",clients:"Memory fabs, Japan IDMs"},
@@ -118,8 +118,8 @@ export const TIERS = [
   },
   {
     id:"subsystems", label:"SUBSYSTEMS — Picks & shovels²", icon:"⚙️",
-    what:"This tier covers gas delivery, vacuum, plasma, and thermal subsystems — the components inside every WFE tool, across more than 1,500 process steps per wafer. The 50% increase in HBM wafer starts translates to 100–200% more subsystem content per fab.",
-    industry:"The market consists of fragmented niche leaders rather than broad oligopolies, and concerns about OEM in-sourcing are overstated. Subsystems trade at 1–5x price-to-sales compared to 7–12x for the WFE OEMs they supply.",
+    what:"This tier covers gas delivery, vacuum, plasma, and thermal subsystems that sit inside every WFE tool, across more than 1,500 process steps per wafer. The 50% increase in HBM wafer starts translates to 100-200% more subsystem content per fab.",
+    industry:"The market consists of fragmented niche leaders rather than broad oligopolies, and concerns about OEM in-sourcing are overstated. Subsystems trade at 1-5x price-to-sales compared to 7-12x for the WFE OEMs they supply.",
     value:"This is the most attractive valuation layer in the ecosystem. Ferrotec at 12x, Ultra Clean at 20x (1.1x P/S), and Ichor at 22x (1.2x P/S) are among the cheapest names in the entire semiconductor supply chain on a fundamental basis.",
     medPE:22, medEV:16, medFCF:13,
     cos:[
@@ -129,7 +129,7 @@ export const TIERS = [
       {t:"AEIS",n:"Advanced Energy",px:"$135",pe:22,ev:16,mc:"$5.5B",v:"Yahoo est",beta:1.4,fcf:3.5,revGr:15,yf:"AEIS",desc:"Advanced Energy supplies precision power conversion systems for plasma etch and deposition equipment, providing the highly controllable RF and DC power required for consistent process results at advanced nodes.",products:"RF power supplies, DC-DC converters, thermal",clients:"AMAT, Lam, TEL, flat panel, industrial"},
       {t:"UCTT",n:"Ultra Clean",px:"$42",pe:20,ev:12,mc:"$2.0B",v:"CompMktCap",beta:1.8,fcf:2.5,revGr:15,yf:"UCTT",desc:"Ultra Clean Holdings manufactures gas delivery systems and chemical delivery modules for wafer fab equipment, trading at approximately 1.1x price-to-sales and representing one of the most compelling value setups in the entire supply chain.",products:"Gas panels, weldments, chemical delivery, cleaning",clients:"AMAT, Lam, Tokyo Electron"},
       {t:"ICHR",n:"Ichor Holdings",px:"$48",pe:22,ev:14,mc:"$1.5B",v:"Yahoo est",beta:1.8,fcf:2.0,revGr:18,yf:"ICHR",desc:"Ichor Holdings designs and manufactures gas and chemical delivery subsystems that serve as the critical fluid handling infrastructure inside semiconductor fab equipment, with Lam Research and Applied Materials as its primary customers.",products:"Gas delivery systems, weldments, fluid delivery",clients:"Lam Research, AMAT, other WFE OEMs"},
-      {t:"6890",n:"Ferrotec",px:"¥4,800",pe:12,ev:8,mc:"$3.5B",v:"TSE est",beta:1.1,fcf:5.0,revGr:10,yf:"6890.T",desc:"Ferrotec manufactures thermoelectric cooling modules, quartz components, silicon parts, and vacuum seals for semiconductor equipment, trading at approximately 12x earnings — the most attractively valued name across the subsystems tier.",products:"Thermoelectric coolers, quartz, silicon parts, vacuum seals",clients:"WFE OEMs, auto, industrial"},
+      {t:"6890",n:"Ferrotec",px:"¥4,800",pe:12,ev:8,mc:"$3.5B",v:"TSE est",beta:1.1,fcf:5.0,revGr:10,yf:"6890.T",desc:"Ferrotec manufactures thermoelectric cooling modules, quartz components, silicon parts, and vacuum seals for semiconductor equipment, trading at approximately 12x earnings and standing as the most attractively valued name across the subsystems tier.",products:"Thermoelectric coolers, quartz, silicon parts, vacuum seals",clients:"WFE OEMs, auto, industrial"},
       {t:"6407",n:"CKD Corp",px:"¥3,200",pe:20,ev:14,mc:"$4.5B",v:"TSE est",beta:1.0,fcf:3.0,revGr:10,yf:"6407.T",desc:"CKD Corporation supplies pneumatic valves, flow controllers, and vacuum components to semiconductor fab equipment manufacturers and direct to fab customers, with additional exposure to the automotive sector.",products:"Pneumatic valves, flow controllers, vacuum components",clients:"WFE OEMs, fab direct, auto"},
       {t:"COTN",n:"Comet Holding",px:"CHF 380",pe:30,ev:22,mc:"$3.5B",v:"SWX est",beta:1.3,fcf:2.0,revGr:12,yf:"COTN.SW",desc:"Comet Holding is a Swiss manufacturer of RF power generation systems and vacuum capacitors used inside the plasma processing tools supplied by Lam Research and Applied Materials.",products:"RF generators, vacuum capacitors, X-ray sources",clients:"Lam, AMAT, industrial, security"},
       {t:"ASYS",n:"Amtech Systems",px:"$7.50",pe:25,ev:8,mc:"$0.3B",v:"Yahoo est",beta:1.5,fcf:0,revGr:8,yf:"ASYS",desc:"Amtech Systems is a micro-cap supplier of thermal processing and wafer handling equipment serving solar cell, semiconductor, and LED manufacturing customers at mature process nodes.",products:"Diffusion furnaces, PECVD, wafer handling",clients:"Solar, semiconductor, LED fabs"},
@@ -138,8 +138,8 @@ export const TIERS = [
   },
   {
     id:"photonics", label:"PHOTONICS — Lasers, transceivers & CPO", icon:"🔴",
-    what:"EML and CW DFB lasers are sold out through 2028, the CPO rotation is expected in 2027–28, and transceivers have become a bottleneck as 1.6T deployment ramps. Every AI rack requires 10–50x more optical bandwidth than traditional data center architecture.",
-    industry:"The laser market is an oligopoly with Lumentum holding over 40% share, the transceiver market is fragmenting, and co-packaged optics is an emerging category. InP laser qualification cycles of 12–18 months represent a meaningful barrier to new entrants.",
+    what:"EML and CW DFB lasers are sold out through 2028, the CPO rotation is expected in 2027-28, and transceivers have become a bottleneck as 1.6T deployment ramps. Every AI rack requires 10-50x more optical bandwidth than traditional data center architecture.",
+    industry:"The laser market is an oligopoly with Lumentum holding over 40% share, the transceiver market is fragmenting, and co-packaged optics is an emerging category. InP laser qualification cycles of 12-18 months represent a meaningful barrier to new entrants.",
     value:"Lumentum has already run 316% but the long-term thesis implies 1000%+ upside. Applied Optoelectronics is executing a 10x revenue ramp. Sivers Semiconductors offers a micro-cap CW DFB laser angle, and Coherent provides full vertical integration across the photonic stack.",
     medPE:30, medEV:20, medFCF:8,
     cos:[
@@ -156,12 +156,12 @@ export const TIERS = [
   },
   {
     id:"materials", label:"MATERIALS — InP substrates & upstream", icon:"💎",
-    what:"The InP substrate market is a duopoly controlled by AXT and Sumitomo Electric with over 65% combined share, while Soitec holds a monopoly on silicon photonics substrates. Qualification cycles of 12–18 months and fundamental physics constraints on crystal growth limit new supply additions to 2–3 year timelines.",
-    industry:"The upstream substrate market exhibits extreme supply concentration with meaningful export control risk, and capacity additions take 2–3 years to bring online, representing the single greatest fragility point in the entire AI photonic supply chain.",
-    value:"AXT's 30–35% InP market share at approximately $200M market cap represents a massive valuation asymmetry relative to the strategic importance of its product. Soitec commands a justified premium as a monopoly supplier. IQE represents a higher-risk restructuring pivot.",
+    what:"The InP substrate market is a duopoly controlled by AXT and Sumitomo Electric with over 65% combined share, while Soitec holds a monopoly on silicon photonics substrates. Qualification cycles of 12-18 months and fundamental physics constraints on crystal growth limit new supply additions to 2-3 year timelines.",
+    industry:"The upstream substrate market exhibits extreme supply concentration with meaningful export control risk, and capacity additions take 2-3 years to bring online, representing the single greatest fragility point in the entire AI photonic supply chain.",
+    value:"AXT's 30-35% InP market share at approximately $200M market cap represents a massive valuation asymmetry relative to the strategic importance of its product. Soitec commands a justified premium as a monopoly supplier. IQE represents a higher-risk restructuring pivot.",
     medPE:25, medEV:14, medFCF:5,
     cos:[
-      {t:"AXTI",n:"AXT Inc",px:"$6.50",pe:null,ev:8,mc:"$0.2B",v:"Yahoo est",beta:1.8,fcf:0,revGr:15,yf:"AXTI",desc:"AXT is one of two global duopolists in InP substrate supply with a 30–35% market share, and its captive Vital precursor joint venture makes it a critical upstream dependency — if AXT supply were disrupted, the broader photonic buildout would be directly impacted.",products:"InP, GaAs, Ge substrates, Vital precursor JV",clients:"Lumentum, Coherent, II-VI, laser fabs"},
+      {t:"AXTI",n:"AXT Inc",px:"$6.50",pe:null,ev:8,mc:"$0.2B",v:"Yahoo est",beta:1.8,fcf:0,revGr:15,yf:"AXTI",desc:"AXT is one of two global duopolists in InP substrate supply with a 30-35% market share, and its captive Vital precursor joint venture makes it a critical upstream dependency. If AXT supply were disrupted, the broader photonic buildout would be directly impacted.",products:"InP, GaAs, Ge substrates, Vital precursor JV",clients:"Lumentum, Coherent, II-VI, laser fabs"},
       {t:"IQE",n:"IQE plc",px:"£0.28",pe:null,ev:null,mc:"$0.2B",v:"LSE est",beta:2.0,fcf:-5,revGr:10,yf:"IQE.L",desc:"IQE is the primary Western supplier of InP epitaxial wafers for Lumentum and Broadcom, currently executing a high-risk restructuring pivot as it attempts to reposition its compound semiconductor portfolio.",products:"InP epiwafers, GaAs epi, GaN epi",clients:"Lumentum, Broadcom, Skyworks"},
       {t:"SOI",n:"Soitec",px:"€95",pe:22,ev:14,mc:"$6B",v:"EPA est",beta:1.3,fcf:3.0,revGr:12,yf:"SOI.PA",desc:"Soitec holds a monopoly on silicon-on-insulator and FD-SOI substrates used in silicon photonic chip manufacturing, meaning every silicon photonics device in production today is built on a Soitec wafer.",products:"SOI wafers, FD-SOI, piezoelectric substrates",clients:"GlobalFoundries, TSMC, STMicro, Tower Semi"},
       {t:"GLW",n:"Corning",px:"$45",pe:20,ev:12,mc:"$37B",v:"Yahoo est",beta:1.1,fcf:4.0,revGr:8,yf:"GLW",desc:"Corning is the world's leading optical fiber manufacturer and specialty glass producer, with its data center fiber business experiencing surging demand as hyperscalers connect AI clusters that require dramatically more optical bandwidth than traditional workloads.",products:"Optical fiber, Gorilla Glass, ceramic substrates, GenAI glass",clients:"Hyperscalers, telecom, Apple, auto"},
@@ -187,8 +187,8 @@ export const TIERS = [
   },
   {
     id:"power", label:"POWER & THERMAL — Data center infrastructure", icon:"🔌",
-    what:"Each modern AI rack consumes 50–120 kilowatts of power compared to 10kW for a traditional server rack, meaning that the electrical grid, cooling systems, and power conversion infrastructure are all structurally undersized and represent a hidden constraint on the pace of AI deployment.",
-    industry:"The power semiconductor market is an oligopoly dominated by ON Semiconductor and Infineon, while Vertiv and Eaton are the clear leaders in data center cooling and UPS systems. Data center power demand is expected to increase 3–5x by 2028.",
+    what:"Each modern AI rack consumes 50-120 kilowatts of power compared to 10kW for a traditional server rack, meaning that the electrical grid, cooling systems, and power conversion infrastructure are all structurally undersized and represent a hidden constraint on the pace of AI deployment.",
+    industry:"The power semiconductor market is an oligopoly dominated by ON Semiconductor and Infineon, while Vertiv and Eaton are the clear leaders in data center cooling and UPS systems. Data center power demand is expected to increase 3-5x by 2028.",
     value:"Vertiv at 35x reflects its dominant market position in liquid cooling. Monolithic Power's 40x premium is supported by its share gains in AI power module sockets on NVIDIA boards. Vicor occupies a high-value niche with its 48V FPA architecture but is not cheap.",
     medPE:28, medEV:20, medFCF:12,
     cos:[
