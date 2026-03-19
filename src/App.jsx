@@ -175,6 +175,11 @@ function FCFChart({tiers}) {
   return <div className="chart-wrap">
     <div className="chart-title">FCF yield — who's generating cash (top 25)</div>
     <div style={{position:'relative',height:520}}><canvas ref={ref}/></div>
+    <div className="legend" style={{marginTop:8}}>
+      {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+        <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+      )}
+    </div>
   </div>
 }
 
@@ -199,6 +204,11 @@ function GrowthChart({tiers}) {
   return <div className="chart-wrap">
     <div className="chart-title">Forward revenue growth — who's accelerating</div>
     <div style={{position:'relative',height:560}}><canvas ref={ref}/></div>
+    <div className="legend" style={{marginTop:8}}>
+      {Object.entries({'Upstream':'#4ade80','Midstream':'#60a5fa','Downstream':'#fbbf24','End Demand':'#fb923c'}).map(([n,c])=>
+        <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
+      )}
+    </div>
   </div>
 }
 
