@@ -94,6 +94,9 @@ export default async function handler(req, res) {
           if (fin?.freeCashflow && fin?.marketCap) {
             results[ticker].fcf = parseFloat(((fin.freeCashflow / fin.marketCap) * 100).toFixed(1));
           }
+          if (fin?.ebitdaMargins) {
+            results[ticker].ebitdaMargin = parseFloat((fin.ebitdaMargins * 100).toFixed(1));
+          }
           // Beta fallback from defaultKeyStatistics
           if (!results[ticker].beta && stats?.beta) {
             results[ticker].beta = parseFloat(stats.beta.toFixed(2));

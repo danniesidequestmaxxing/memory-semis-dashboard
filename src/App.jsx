@@ -243,6 +243,7 @@ function mergeLiveData(staticTiers, liveData) {
         ev: live.ev ?? co.ev,
         beta: live.beta ?? co.beta,
         fcf: live.fcf ?? co.fcf,
+        ebitdaMargin: live.ebitdaMargin ?? co.ebitdaMargin,
         mc: live.mc || co.mc,
         v: live.v || co.v,
       };
@@ -262,6 +263,115 @@ function mergeLiveData(staticTiers, liveData) {
   });
 }
 
+const STREAM_COLORS = {upstream:'#4ade80',midstream:'#60a5fa',downstream:'#fbbf24',demand:'#fb923c'};
+const STREAM_LABELS = {upstream:'UPSTREAM',midstream:'MIDSTREAM',downstream:'DOWNSTREAM',demand:'END DEMAND'};
+const STREAM_DESC = {
+  upstream:'Raw materials, substrates, and subcomponents that feed into equipment manufacturing. Highest supply fragility and longest qualification cycles.',
+  midstream:'Equipment makers, foundries, packaging houses, and testing providers that transform materials into functional silicon. Capital-intensive with high barriers to entry.',
+  downstream:'Finished chips, networking infrastructure, and power systems that go into data center racks. Closest to end-customer revenue cycles.',
+  demand:'Hyperscalers and AI labs that deploy the capital. Their spending decisions cascade through every tier above.',
+};
+const STREAM_ORDER = ['upstream','midstream','downstream','demand'];
+
+function SupplyChainTab({tiers}) {
+  const grouped = {};
+  for (const s of STREAM_ORDER) grouped[s] = tiers.filter(t=>t.stream===s);
+
+  // Calculate median EBITDA margin per tier
+  const tierMargins = tiers.map(t=>{
+    const vals = t.cos.map(c=>c.ebitdaMargin).filter(v=>v!=null&&v>0);
+    if (!vals.length) return {id:t.id,label:t.label.split(' — ')[0],stream:t.stream,medMargin:null,medPE:t.medPE,icon:t.icon,color:TIER_COLORS[t.id]};
+    const s = [...vals].sort((a,b)=>a-b);
+    const m = Math.floor(s.length/2);
+    const med = s.length%2?s[m]:Math.round((s[m-1]+s[m])/2);
+    return {id:t.id,label:t.label.split(' — ')[0],stream:t.stream,medMargin:med,medPE:t.medPE,icon:t.icon,color:TIER_COLORS[t.id]};
+  });
+
+  // Sort by stream order then by margin desc within stream
+  const sorted = [...tierMargins].sort((a,b)=>{
+    const si = STREAM_ORDER.indexOf(a.stream) - STREAM_ORDER.indexOf(b.stream);
+    if (si!==0) return si;
+    return (b.medMargin||0)-(a.medMargin||0);
+  });
+
+  const maxMargin = Math.max(...sorted.map(t=>t.medMargin||0),1);
+  const maxPE = Math.max(...sorted.map(t=>t.medPE||0),1);
+
+  return <>
+    {/* Flow diagram */}
+    <div className="chart-wrap">
+      <div className="chart-title">Supply chain flow: upstream to end demand</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:16,lineHeight:1.6}}>
+        Capital flows downstream from hyperscalers, but supply constraints propagate upstream.
+        The further upstream you go, the more concentrated and fragile the supply base becomes.
+      </p>
+      <div className="flow-diagram">
+        {STREAM_ORDER.map((stream,si)=><div key={stream}>
+          <div className="flow-stream" style={{borderColor:STREAM_COLORS[stream]}}>
+            <div className="flow-stream-label" style={{color:STREAM_COLORS[stream]}}>{STREAM_LABELS[stream]}</div>
+            <div style={{fontSize:10,color:'var(--t3)',marginBottom:8,lineHeight:1.5}}>{STREAM_DESC[stream]}</div>
+            <div className="flow-tiers">
+              {grouped[stream].map(t=>{
+                const margin = tierMargins.find(m=>m.id===t.id);
+                return <div key={t.id} className="flow-tier-box" style={{borderColor:TIER_COLORS[t.id]+'60'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:2}}>
+                    <span style={{fontSize:13}}>{t.icon}</span>
+                    <span className="mono" style={{fontSize:10,fontWeight:700,color:'var(--t1)'}}>{t.label.split(' — ')[0]}</span>
+                  </div>
+                  <div style={{display:'flex',gap:10,fontSize:9,color:'var(--t3)'}}>
+                    <span>P/E <span className="mono" style={{color:'var(--t2)',fontWeight:600}}>{t.medPE}x</span></span>
+                    <span>EBITDA <span className="mono" style={{color:STREAM_COLORS[stream],fontWeight:600}}>{margin?.medMargin!=null?margin.medMargin+'%':'N/A'}</span></span>
+                  </div>
+                  <div style={{fontSize:8,color:'var(--t4)',marginTop:2}}>{t.cos.length} companies</div>
+                </div>;
+              })}
+            </div>
+          </div>
+          {si < STREAM_ORDER.length-1 && <div className="flow-arrow">
+            <div className="flow-arrow-line"/>
+            <div className="flow-arrow-label">{['Materials and subcomponents feed into equipment and fabs','Equipment, fabs, and packaging produce finished silicon','Chips, networking, and power go into hyperscaler racks'][si]}</div>
+            <div className="flow-arrow-head">▼</div>
+          </div>}
+        </div>)}
+      </div>
+    </div>
+
+    {/* Margin vs P/E analysis */}
+    <div className="chart-wrap">
+      <div className="chart-title">Hypothesis test: do upstream margins justify higher multiples?</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.6}}>
+        Median EBITDA margin and forward P/E by supply chain tier, ordered from upstream to end demand.
+        If the hypothesis holds, upstream tiers should show higher margins that justify premium valuations.
+      </p>
+      <div style={{display:'flex',flexDirection:'column',gap:4}}>
+        {sorted.map(t=><div key={t.id} style={{display:'flex',alignItems:'center',gap:6}}>
+          <div style={{width:14,textAlign:'center',fontSize:11}}>{t.icon}</div>
+          <div style={{width:90,fontSize:10,color:'var(--t3)',textAlign:'right',flexShrink:0}}>{t.label}</div>
+          <div style={{flex:1,display:'flex',gap:2,alignItems:'center'}}>
+            {/* EBITDA margin bar */}
+            <div style={{flex:1,height:12,background:'var(--bg)',borderRadius:3,overflow:'hidden',position:'relative'}}>
+              <div style={{width:`${((t.medMargin||0)/maxMargin)*100}%`,height:'100%',background:STREAM_COLORS[t.stream],borderRadius:3,opacity:0.5}}/>
+            </div>
+            <div className="mono" style={{fontSize:9,fontWeight:600,color:STREAM_COLORS[t.stream],width:32,textAlign:'right'}}>{t.medMargin!=null?t.medMargin+'%':'--'}</div>
+          </div>
+          <div style={{width:1,height:12,background:'var(--border)',margin:'0 4px'}}/>
+          <div style={{flex:0.6,display:'flex',gap:2,alignItems:'center'}}>
+            {/* P/E bar */}
+            <div style={{flex:1,height:12,background:'var(--bg)',borderRadius:3,overflow:'hidden'}}>
+              <div style={{width:`${((t.medPE||0)/maxPE)*100}%`,height:'100%',background:t.color,borderRadius:3,opacity:0.4}}/>
+            </div>
+            <div className="mono" style={{fontSize:9,fontWeight:600,color:'var(--t2)',width:24,textAlign:'right'}}>{t.medPE}x</div>
+          </div>
+        </div>)}
+      </div>
+      <div style={{display:'flex',gap:16,marginTop:10,fontSize:9,color:'var(--t4)'}}>
+        <span>Left bars = median EBITDA margin (colored by stream position)</span>
+        <span>Right bars = median forward P/E</span>
+      </div>
+    </div>
+  </>;
+}
+
 function DataStatus({isLive, updated}) {
   return <span style={{fontSize:9,padding:'2px 6px',borderRadius:4,marginLeft:8,
     background:isLive?'rgba(74,222,128,0.15)':'rgba(239,68,68,0.15)',
@@ -275,7 +385,7 @@ export default function App() {
   const [open,setOpen] = useState('demand')
   const [tiers,setTiers] = useState(TIERS)
   const [dataStatus,setDataStatus] = useState({isLive:false,updated:null})
-  const tabs = [['pyramid','Pyramid'],['scatter','PE vs Beta'],['fcf','FCF Yield'],['growth','Rev Growth'],['gaps','Valuation Gaps']]
+  const tabs = [['pyramid','Pyramid'],['chain','Supply Chain'],['scatter','PE vs Beta'],['fcf','FCF Yield'],['growth','Rev Growth'],['gaps','Valuation Gaps']]
 
   useEffect(()=>{
     fetch('/api/market-data')
@@ -312,6 +422,7 @@ export default function App() {
     {tab==='fcf' && <FCFChart tiers={tiers}/>}
     {tab==='growth' && <GrowthChart tiers={tiers}/>}
     {tab==='gaps' && <Gaps/>}
+    {tab==='chain' && <SupplyChainTab tiers={tiers}/>}
 
     <div className="method">
       <div className="method-title">Data sources & methodology</div>
