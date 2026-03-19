@@ -107,17 +107,20 @@ function BubbleChart() {
   const chartRef = useRef(null)
   useEffect(()=>{
     if(chartRef.current) chartRef.current.destroy()
+    // Stream colors: upstream=#4ade80, midstream=#60a5fa, downstream=#fbbf24, demand=#fb923c
+    const up='#4ade80',mid='#60a5fa',dn='#fbbf24',dem='#fb923c';
     const tiers = {
-      Memory:{c:'#4ade80',d:[{x:1.4,y:8,r:28,l:'SK Hynix'},{x:1.3,y:7,r:16,l:'Micron'},{x:1.5,y:18,r:6,l:'Nanya'},{x:1.3,y:22,r:5,l:'Winbond'},{x:1.2,y:20,r:5,l:'Macronix'},{x:1.4,y:15,r:4,l:'ESMT'}]},
-      Subsystems:{c:'#a78bfa',d:[{x:1.5,y:28,r:10,l:'MKS'},{x:1.8,y:22,r:5,l:'Ichor'},{x:1.4,y:32,r:10,l:'Entegris'},{x:1.3,y:40,r:9,l:'VAT'},{x:1.4,y:22,r:6,l:'Adv Energy'},{x:1.8,y:20,r:5,l:'UCTT'},{x:1.1,y:12,r:5,l:'Ferrotec'}]},
-      Testing:{c:'#60a5fa',d:[{x:1.5,y:35,r:12,l:'Advantest'},{x:1.3,y:42,r:11,l:'Teradyne'},{x:1.5,y:26,r:7,l:'FormFactor'},{x:1.2,y:18,r:5,l:'MJC'},{x:1.3,y:16,r:5,l:'WinWay'},{x:1.2,y:14,r:4,l:'ISC'},{x:1.1,y:15,r:4,l:'LEENO'}]},
-      Packaging:{c:'#f472b6',d:[{x:1.6,y:54,r:8,l:'BESI'},{x:1.3,y:16,r:6,l:'ASMPT'},{x:1.5,y:26,r:9,l:'Amkor'},{x:1.2,y:14,r:7,l:'Powertech'}]},
-      'WFE OEMs':{c:'#5eead4',d:[{x:1.2,y:32,r:14,l:'ASML'},{x:1.7,y:34,r:13,l:'AMAT'},{x:1.4,y:25,r:10,l:'Lam'},{x:1.3,y:35,r:12,l:'KLA'},{x:1.4,y:38,r:8,l:'ASM'},{x:1.5,y:27,r:7,l:'ONTO'}]},
-      Compute:{c:'#fbbf24',d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'}]},
-      Photonics:{c:'#f97316',d:[{x:1.5,y:35,r:8,l:'Lumentum'},{x:1.6,y:28,r:10,l:'Coherent'},{x:1.4,y:38,r:8,l:'MACOM'},{x:1.3,y:30,r:8,l:'Fabrinet'},{x:1.4,y:18,r:5,l:'Himax'}]},
-      Materials:{c:'#a3e635',d:[{x:1.3,y:22,r:7,l:'Soitec'},{x:1.1,y:20,r:6,l:'Corning'},{x:0.9,y:14,r:6,l:'Sumitomo'}]},
-      Networking:{c:'#38bdf8',d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'}]},
-      Power:{c:'#e879f9',d:[{x:1.5,y:35,r:10,l:'Vertiv'},{x:1.4,y:42,r:9,l:'MPWR'},{x:1.0,y:30,r:13,l:'Eaton'},{x:1.6,y:18,r:8,l:'ON Semi'},{x:1.3,y:16,r:10,l:'Infineon'}]},
+      Subsystems:{c:up,d:[{x:1.5,y:28,r:10,l:'MKS'},{x:1.8,y:22,r:5,l:'Ichor'},{x:1.4,y:32,r:10,l:'Entegris'},{x:1.3,y:40,r:9,l:'VAT'},{x:1.4,y:22,r:6,l:'Adv Energy'},{x:1.8,y:20,r:5,l:'UCTT'},{x:1.1,y:12,r:5,l:'Ferrotec'}]},
+      Materials:{c:up,d:[{x:1.3,y:22,r:7,l:'Soitec'},{x:1.1,y:20,r:6,l:'Corning'},{x:0.9,y:14,r:6,l:'Sumitomo'}]},
+      Foundry:{c:mid,d:[{x:1.1,y:22,r:14,l:'TSMC'},{x:1.1,y:12,r:12,l:'Samsung'},{x:0.9,y:14,r:6,l:'UMC'}]},
+      'WFE OEMs':{c:mid,d:[{x:1.2,y:32,r:14,l:'ASML'},{x:1.7,y:34,r:13,l:'AMAT'},{x:1.4,y:25,r:10,l:'Lam'},{x:1.3,y:35,r:12,l:'KLA'},{x:1.4,y:38,r:8,l:'ASM'},{x:1.5,y:27,r:7,l:'ONTO'}]},
+      Testing:{c:mid,d:[{x:1.5,y:35,r:12,l:'Advantest'},{x:1.3,y:42,r:11,l:'Teradyne'},{x:1.5,y:26,r:7,l:'FormFactor'},{x:1.2,y:18,r:5,l:'MJC'},{x:1.3,y:16,r:5,l:'WinWay'},{x:1.2,y:14,r:4,l:'ISC'},{x:1.1,y:15,r:4,l:'LEENO'}]},
+      Packaging:{c:mid,d:[{x:1.6,y:54,r:8,l:'BESI'},{x:1.3,y:16,r:6,l:'ASMPT'},{x:1.5,y:26,r:9,l:'Amkor'},{x:1.2,y:14,r:7,l:'Powertech'}]},
+      Photonics:{c:mid,d:[{x:1.5,y:35,r:8,l:'Lumentum'},{x:1.6,y:28,r:10,l:'Coherent'},{x:1.4,y:38,r:8,l:'MACOM'},{x:1.3,y:30,r:8,l:'Fabrinet'},{x:1.4,y:18,r:5,l:'Himax'}]},
+      Memory:{c:dn,d:[{x:1.4,y:8,r:28,l:'SK Hynix'},{x:1.3,y:7,r:16,l:'Micron'},{x:1.5,y:18,r:6,l:'Nanya'},{x:1.3,y:22,r:5,l:'Winbond'},{x:1.2,y:20,r:5,l:'Macronix'},{x:1.4,y:15,r:4,l:'ESMT'}]},
+      Compute:{c:dn,d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'}]},
+      Networking:{c:dn,d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'}]},
+      Power:{c:dn,d:[{x:1.5,y:35,r:10,l:'Vertiv'},{x:1.4,y:42,r:9,l:'MPWR'},{x:1.0,y:30,r:13,l:'Eaton'},{x:1.6,y:18,r:8,l:'ON Semi'},{x:1.3,y:16,r:10,l:'Infineon'}]},
     }
     chartRef.current = new Chart(ref.current,{
       type:'bubble',
@@ -133,7 +136,7 @@ function BubbleChart() {
     <div className="chart-title">Forward P/E vs beta — risk-adjusted valuation</div>
     <div style={{position:'relative',height:420}}><canvas ref={ref}/></div>
     <div className="legend">
-      {Object.entries({Memory:'#4ade80',Subsystems:'#a78bfa',Testing:'#60a5fa',Packaging:'#f472b6','WFE OEMs':'#5eead4',Compute:'#fbbf24',Photonics:'#f97316',Materials:'#a3e635',Networking:'#38bdf8',Power:'#e879f9'}).map(([n,c])=>
+      {Object.entries({'Upstream (Materials, Subsystems)':'#4ade80','Midstream (WFE, Foundry, Packaging, Testing, Photonics)':'#60a5fa','Downstream (Memory, Compute, Networking, Power)':'#fbbf24'}).map(([n,c])=>
         <span key={n} style={{display:'flex',alignItems:'center',gap:4}}><span className="legend-dot" style={{background:c}}/>{n}</span>
       )}
       <span style={{color:'var(--t4)',fontSize:10,marginLeft:8}}>Bubble size = market cap. Bottom-left = safest value.</span>
@@ -146,7 +149,7 @@ function FCFChart({tiers}) {
   const chartRef = useRef(null)
   useEffect(()=>{
     if(chartRef.current) chartRef.current.destroy()
-    const all = tiers.flatMap(t=>t.cos.filter(c=>c.fcf!=null&&c.fcf>0).map(c=>({n:c.n,v:c.fcf,c:TIER_COLORS[t.id]})))
+    const all = tiers.flatMap(t=>t.cos.filter(c=>c.fcf!=null&&c.fcf>0).map(c=>({n:c.n,v:c.fcf,c:STREAM_COLORS[t.stream]||TIER_COLORS[t.id]})))
     all.sort((a,b)=>b.v-a.v)
     const top = all.slice(0,25)
     chartRef.current = new Chart(ref.current,{
@@ -170,7 +173,7 @@ function GrowthChart({tiers}) {
   const chartRef = useRef(null)
   useEffect(()=>{
     if(chartRef.current) chartRef.current.destroy()
-    const all = tiers.flatMap(t=>t.cos.filter(c=>c.revGr!=null&&c.revGr>0).map(c=>({n:c.n,v:c.revGr,c:TIER_COLORS[t.id]})))
+    const all = tiers.flatMap(t=>t.cos.filter(c=>c.revGr!=null&&c.revGr>0).map(c=>({n:c.n,v:c.revGr,c:STREAM_COLORS[t.stream]||TIER_COLORS[t.id]})))
     all.sort((a,b)=>b.v-a.v)
     const top = all.slice(0,30)
     chartRef.current = new Chart(ref.current,{
@@ -199,7 +202,7 @@ function MedianBars({tiers}) {
       {sorted.map(t=><div key={t.id} style={{display:'flex',alignItems:'center',gap:8}}>
         <div style={{width:100,fontSize:10,color:'var(--t4)',textAlign:'right',flexShrink:0}}>{t.label.split('—')[0].trim()}</div>
         <div style={{flex:1,height:16,background:'var(--bg)',borderRadius:3,overflow:'hidden'}}>
-          <div style={{width:`${(t.medPE/max)*100}%`,height:'100%',background:TIER_COLORS[t.id],borderRadius:3,opacity:0.6}}/>
+          <div style={{width:`${(t.medPE/max)*100}%`,height:'100%',background:STREAM_COLORS[t.stream]||TIER_COLORS[t.id],borderRadius:3,opacity:0.6}}/>
         </div>
         <div className="mono" style={{fontSize:13,fontWeight:700,color:peColor(t.medPE),width:36,textAlign:'right'}}>{t.medPE}x</div>
       </div>)}
