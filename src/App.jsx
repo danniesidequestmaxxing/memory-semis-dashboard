@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Chart, registerables } from 'chart.js'
-import { TIERS, TIER_COLORS, VALUATION_GAPS, SUPPLY_CHAIN_PAIRS } from './data.js'
+import { TIERS, TIER_COLORS, VALUATION_GAPS, SUPPLY_CHAIN_PAIRS, GTC_THEMES } from './data.js'
 
 Chart.register(...registerables)
 
@@ -73,6 +73,17 @@ function Tier({tier,isOpen,toggle}) {
             <span style={{fontSize:11,fontWeight:600,color:'var(--t1)'}}>{c.n}</span>
             <span className="mono" style={{fontSize:9,color:'var(--t4)',marginLeft:'auto'}}>{c.mc}</span>
           </div>
+          {c.gtcThemes && c.gtcThemes.length > 0 && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:3,marginBottom:3}}>
+              {c.gtcThemes.map(theme => {
+                const meta = GTC_THEMES[theme];
+                if (!meta) return null;
+                return <span key={theme} className={`gtc-badge ${meta.dead?'dead':'live'}`} style={{color:meta.color}}>
+                  {meta.dead && '⚠ '}{meta.label}
+                </span>;
+              })}
+            </div>
+          )}
           <div style={{fontSize:10,color:'var(--t2)',marginBottom:3}}>{c.desc}</div>
           <div style={{fontSize:9,color:'var(--t3)'}}><strong style={{color:'var(--t2)'}}>Products:</strong> {c.products}</div>
           <div style={{fontSize:9,color:'var(--t3)'}}><strong style={{color:'var(--t2)'}}>Clients:</strong> {c.clients}</div>
@@ -118,8 +129,8 @@ function BubbleChart() {
       Packaging:{c:mid,d:[{x:1.6,y:54,r:8,l:'BESI'},{x:1.3,y:16,r:6,l:'ASMPT'},{x:1.5,y:26,r:9,l:'Amkor'},{x:1.2,y:14,r:7,l:'Powertech'}]},
       Photonics:{c:mid,d:[{x:1.5,y:35,r:8,l:'Lumentum'},{x:1.6,y:28,r:10,l:'Coherent'},{x:1.4,y:38,r:8,l:'MACOM'},{x:1.3,y:30,r:8,l:'Fabrinet'},{x:1.4,y:18,r:5,l:'Himax'}]},
       Memory:{c:dn,d:[{x:1.4,y:8,r:28,l:'SK Hynix'},{x:1.3,y:7,r:16,l:'Micron'},{x:1.5,y:18,r:6,l:'Nanya'},{x:1.3,y:22,r:5,l:'Winbond'},{x:1.2,y:20,r:5,l:'Macronix'},{x:1.4,y:15,r:4,l:'ESMT'}]},
-      Compute:{c:dn,d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'}]},
-      Networking:{c:dn,d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'}]},
+      Compute:{c:dn,d:[{x:1.7,y:35,r:30,l:'NVDA'},{x:1.3,y:32,r:18,l:'AVGO'},{x:1.6,y:28,r:13,l:'AMD'},{x:1.4,y:85,r:11,l:'ARM'}]},
+      Networking:{c:dn,d:[{x:1.2,y:20,r:7,l:'Ciena'},{x:0.9,y:15,r:8,l:'Nokia'},{x:0.9,y:16,r:14,l:'Cisco'},{x:1.1,y:35,r:12,l:'Amphenol'},{x:1.2,y:18,r:7,l:'Tower Semi'},{x:1.2,y:38,r:10,l:'Arista'}]},
       Power:{c:dn,d:[{x:1.5,y:35,r:10,l:'Vertiv'},{x:1.4,y:42,r:9,l:'MPWR'},{x:1.0,y:30,r:13,l:'Eaton'},{x:1.6,y:18,r:8,l:'ON Semi'},{x:1.3,y:16,r:10,l:'Infineon'}]},
       Demand:{c:dem,d:[{x:1.15,y:35,r:20,l:'Amazon'},{x:1.05,y:22,r:20,l:'Alphabet'},{x:1.25,y:24,r:18,l:'Meta'},{x:0.9,y:32,r:22,l:'Microsoft'},{x:1.1,y:28,r:10,l:'Oracle'}]},
     }
@@ -128,7 +139,7 @@ function BubbleChart() {
       data:{datasets:Object.entries(tiers).map(([n,{c,d}])=>({label:n,data:d,backgroundColor:c+'80',borderColor:c,borderWidth:0.5}))},
       options:{responsive:true,maintainAspectRatio:false,layout:{padding:20},
         scales:{x:{title:{display:true,text:'Beta →',color:'#777',font:{size:11}},min:0.8,max:2.2,grid:{color:'#ffffff0a'},ticks:{color:'#777',stepSize:0.2}},
-                y:{title:{display:true,text:'Forward P/E →',color:'#777',font:{size:11}},min:0,max:60,grid:{color:'#ffffff0a'},ticks:{color:'#777'}}},
+                y:{title:{display:true,text:'Forward P/E →',color:'#777',font:{size:11}},min:0,max:90,grid:{color:'#ffffff0a'},ticks:{color:'#777'}}},
         plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const p=ctx.raw;return `${p.l}: ${p.y}x fwd PE, ${p.x}β`}}}}}
     })
     return ()=>{ if(chartRef.current) chartRef.current.destroy() }
@@ -469,6 +480,8 @@ function SupplyChainTab({tiers}) {
 }
 
 function RelativeValueTab({tiers}) {
+  const [activeTheme, setActiveTheme] = useState(null)
+
   // Build ticker → company+stream lookup
   const coMap = {}
   tiers.forEach(tier => {
@@ -517,6 +530,50 @@ function RelativeValueTab({tiers}) {
   const ratioLabel = r => r < 0.5 ? 'Deep value' : r < 0.7 ? 'Undervalued' : r < 0.9 ? 'Fair' : r < 1.1 ? 'Parity' : 'Expensive'
 
   return <>
+    {/* GTC 2026 Theme Filter */}
+    <div className="chart-wrap">
+      <div className="chart-title">GTC 2026 theme exposure</div>
+      <p style={{fontSize:11,color:'var(--t3)',marginBottom:10,lineHeight:1.7}}>
+        Jensen Huang's GTC keynote emphasis shifts are a leading indicator for where capital flows next. Companies mapped to GTC 2025 themes
+        returned +205% (Vertiv), +95% (TSMC), and +68% (Broadcom) over the following 12 months. Filter by theme to find the cheapest names
+        in each 2026 signal.
+      </p>
+      <div className="gtc-filter">
+        <button className={`gtc-filter-btn ${!activeTheme?'active':''}`} onClick={()=>setActiveTheme(null)}>All</button>
+        {Object.entries(GTC_THEMES).map(([key,meta])=>(
+          <button key={key} className={`gtc-filter-btn ${activeTheme===key?'active':''}`}
+            style={activeTheme===key?{borderColor:meta.color,color:meta.color}:{}}
+            onClick={()=>setActiveTheme(activeTheme===key?null:key)}>
+            {meta.dead && '⚠ '}{meta.label}
+          </button>
+        ))}
+      </div>
+      {activeTheme && GTC_THEMES[activeTheme] && (
+        <div style={{padding:10,borderRadius:6,background:'var(--bg)',border:`1px solid ${GTC_THEMES[activeTheme].dead?'var(--red)':'var(--border)'}`,marginBottom:8}}>
+          {GTC_THEMES[activeTheme].dead && (
+            <div style={{fontSize:10,fontWeight:700,color:'var(--red)',marginBottom:4}}>
+              DEAD THEME — Jensen stopped emphasizing this at GTC 2026. Companies with only dead-theme exposure may be value traps.
+            </div>
+          )}
+          <div style={{fontSize:11,color:'var(--t2)',lineHeight:1.6}}>{GTC_THEMES[activeTheme].desc}</div>
+          {(()=>{
+            const tagged = tiers.flatMap(t=>t.cos.filter(c=>c.t!=='—'&&c.gtcThemes&&c.gtcThemes.includes(activeTheme)))
+              .sort((a,b)=>(a.pe||999)-(b.pe||999))
+            return <div style={{marginTop:8}}>
+              <div style={{fontSize:9,color:'var(--t4)',marginBottom:4}}>{tagged.length} companies exposed</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                {tagged.map(c=>(
+                  <span key={c.t} className="mono" style={{fontSize:9,padding:'2px 6px',borderRadius:4,background:'var(--bg2)',border:'1px solid var(--border)',color:'var(--t2)'}}>
+                    {c.t} {c.pe!=null && <span style={{color:c.pe<=18?'var(--green)':c.pe<=30?'var(--gray)':'var(--red)'}}>{c.pe}x</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          })()}
+        </div>
+      )}
+    </div>
+
     {/* Section 1: Stream-level ratios */}
     <div className="chart-wrap">
       <div className="chart-title">Supply chain valuation ratios</div>
@@ -651,7 +708,8 @@ function RelativeValueTab({tiers}) {
       const sizeFactor = mcB => mcB < 1 ? 3.0 : mcB < 5 ? 2.0 : mcB < 20 ? 1.5 : mcB < 100 ? 1.0 : 0.5
 
       const scored = tiers.flatMap(tier =>
-        tier.cos.filter(c => c.t !== '—' && c.pe != null && c.pe > 0 && c.revGr != null && c.revGr > 0 && c.ebitdaMargin != null && c.ebitdaMargin > 0)
+        tier.cos.filter(c => c.t !== '—' && c.pe != null && c.pe > 0 && c.revGr != null && c.revGr > 0 && c.ebitdaMargin != null && c.ebitdaMargin > 0
+          && (!activeTheme || (c.gtcThemes && c.gtcThemes.includes(activeTheme))))
           .map(c => {
             const mcB = parseMC(c.mc)
             const sf = mcB != null ? sizeFactor(mcB) : 1.0
@@ -667,7 +725,14 @@ function RelativeValueTab({tiers}) {
 
       return <>
         <div className="chart-wrap">
-          <div className="chart-title">Asymmetry score: growth-adjusted value ranking</div>
+          <div className="chart-title">
+            Asymmetry score: growth-adjusted value ranking
+            {activeTheme && GTC_THEMES[activeTheme] && (
+              <span style={{marginLeft:8,fontSize:9,fontWeight:600,padding:'2px 8px',borderRadius:8,border:`1px solid ${GTC_THEMES[activeTheme].color}`,color:GTC_THEMES[activeTheme].color}}>
+                Filtered: {GTC_THEMES[activeTheme].label}
+              </span>
+            )}
+          </div>
           <p style={{fontSize:11,color:'var(--t3)',marginBottom:14,lineHeight:1.7}}>
             Each company is scored on how much revenue growth you get per unit of P/E, multiplied by margin quality and a size premium
             that rewards smaller companies where institutional attention is thinnest. The formula is

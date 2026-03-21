@@ -9,7 +9,7 @@ import yahooFinance from 'yahoo-finance2';
 
 const TICKERS = [
   'AMZN','GOOG','META','MSFT','ORCL','CRWV',
-  'NVDA','AVGO','AMD','MRVL',
+  'NVDA','AVGO','AMD','MRVL','ARM',
   'TSM','005930.KS','INTC','GFS','UMC',
   '000660.KS','MU','2408.TW','2344.TW','2337.TW','3006.TW',
   'ASML','AMAT','LRCX','KLAC','8035.T','ASM.AS','ONTO',
@@ -18,7 +18,7 @@ const TICKERS = [
   'MKSI','ENTG','VACN.SW','AEIS','UCTT','ICHR','6890.T','6407.T','COTN.SW','ASYS','PDFS',
   'LITE','COHR','AAOI','SIVE.ST','POET','MTSI','FN','HIMX','LWLG',
   'AXTI','IQE.L','SOI.PA','GLW','5802.T',
-  'CIEN','NOK','CSCO','APH','TEL','TSEM','VIAV','KEYS',
+  'CIEN','NOK','CSCO','APH','TEL','TSEM','VIAV','KEYS','ANET',
   'VRT','MPWR','VICR','ETN','NVT','MOD','ON','IFX.DE','SU.PA',
 ];
 
